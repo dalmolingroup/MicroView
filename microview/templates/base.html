@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    {% include 'head.html' %}
+</head>
+
+<body>
+    <main>
+        <section>
+            <h1>Taxonomic Results</h1>
+            <div>
+                <h2>Number of Classified Reads</h2>
+                {{ tax_plots.assigned_plot }}
+            </div>
+            <div>
+                <h2>Most Common Taxa</h2>
+                <p>The percentage of reads among the top taxa in each sample</p>
+                {{ tax_plots.common_taxas_plot }}
+            </div>
+            <div>
+                <h2>Diversity and Abundance</h2>
+                <p>Shannon's diversity index and Pielou's evenness among all samples </p>
+                {{ tax_plots.abund_div_plot }}
+            </div>
+        </section>
+    </main>
+</body>
+
+</html>

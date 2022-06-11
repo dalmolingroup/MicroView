@@ -5,7 +5,7 @@ from setuptools import find_packages, setup
 with open("README.md", "r") as readme_file:
     readme = readme_file.read()
 
-install_requirements = ["requests", "pandas"]
+install_requirements = ["pandas", "numpy", "plotly", "jinja2", "rich-click"]
 
 test_requirements = [
     "pytest>=3",
@@ -29,7 +29,7 @@ setup(
     long_description=readme,
     long_description_content_type="text/markdown",
     include_package_data=True,
-    entry_points={"console_scripts": ["microview = microview.cli.cli:main"]},
+    entry_points={"console_scripts": ["microview = microview.cli:main"]},
     keywords="metagenomics workflow visualization report",
     name="MicroView",
     packages=find_packages(include=["microview", "microview.*"]),
