@@ -6,25 +6,42 @@
 </head>
 
 <body>
-    <main>
-        <section>
-            <h1>Taxonomic Results</h1>
-            <div>
-                <h2>Number of Classified Reads</h2>
-                {{ tax_plots.assigned_plot }}
+    <div>
+        <h1>MicroView</h1>
+        <main class="container">
+            <div class="row">
+                <section id="toc" class="three columns">
+                    <ul>
+                        <li>
+                            <a href="#taxonomy">Taxonomy</a>
+                            <ul>
+                                <li><a href="#classified-reads">Classified Reads</a></li>
+                                <li><a href="#common-taxa">Most Common Taxa</a></li>
+                                <li><a href="#diversity">Diversity and Abundance</a></li>
+                            </ul>
+                        </li>
+                    </ul>
+                </section>
+                <section id="taxonomy" class="nine columns">
+                    <h2>Taxonomic Results</h2>
+                    <div id="classified-reads">
+                        <h3>Number of Classified Reads</h3>
+                        {{ tax_plots.assigned_plot }}
+                    </div>
+                    <div id="common-taxa">
+                        <h3>Most Common Taxa</h3>
+                        <p>The percentage of reads among the top taxa in each sample</p>
+                        {{ tax_plots.common_taxas_plot }}
+                    </div>
+                    <div id="diversity">
+                        <h3>Diversity and Abundance</h3>
+                        <p>Shannon's diversity index and Pielou's evenness among all samples </p>
+                        {{ tax_plots.abund_div_plot }}
+                    </div>
+                </section>
             </div>
-            <div>
-                <h2>Most Common Taxa</h2>
-                <p>The percentage of reads among the top taxa in each sample</p>
-                {{ tax_plots.common_taxas_plot }}
-            </div>
-            <div>
-                <h2>Diversity and Abundance</h2>
-                <p>Shannon's diversity index and Pielou's evenness among all samples </p>
-                {{ tax_plots.abund_div_plot }}
-            </div>
-        </section>
-    </main>
+        </main>
+    </div>
 </body>
 
 </html>

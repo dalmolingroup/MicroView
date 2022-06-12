@@ -7,9 +7,12 @@ from microview.plotting import generate_taxo_plots
 from microview.rendering import render_base
 
 
-@click.command()
+@click.command(context_settings=dict(help_option_names=["-h", "--help"]))
 @click.option(
-    "--taxonomy", help="Path to taxonomy classification results", type=click.Path()
+    "--taxonomy",
+    required=True,
+    help="Path to taxonomy classification results",
+    type=click.Path(),
 )
 def main(taxonomy: Path) -> None:
     tax_results = get_tax_data(taxonomy)
