@@ -1,30 +1,31 @@
 from collections import Counter
 from pathlib import Path
-from typing import Counter, Dict, Tuple
+from typing import Counter, Dict, List, Tuple
 
 import numpy as np
 import pandas as pd
 from skbio.diversity import alpha_diversity
 
 
-def parse_kaiju2table(file: Path) -> dict:
-    df = pd.read_table(file).replace({"None": np.NaN}, regex=True)
+def parse_kaiju2table(files: List[Path]) -> dict:
     parsed_stats: Dict[str, dict] = {}
 
-    for sample in df["file"].unique():
-        parsed_stats[sample] = {"assigned": {}}
-        sample_df = df[df["file"] == sample]
+    for sample in files:
+        df = pd.read_table(sample).replace({"None": np.NaN}, regex=True)
 
-        for row in sample_df.itertuples():
+        sample_name = sample.name
+        parsed_stats[sample_name] = {"assigned": {}}
+
+        for row in df.itertuples():
 
             row_dict = {"n_reads": row.reads, "percent": row.percent}
             if row.taxon_name == "unclassified":
-                parsed_stats[sample]["unclassified"] = row_dict
+                parsed_stats[sample_name]["unclassified"] = row_dict
             elif row.taxon_name.startswith("cannot"):
-                parsed_stats[sample]["cannot be assigned"] = row_dict
+                parsed_stats[sample_name]["cannot be assigned"] = row_dict
             else:
                 taxon_name: str = list(filter(None, row.taxon_name.split(";")))[-1]
-                parsed_stats[sample]["assigned"][taxon_name] = row_dict
+                parsed_stats[sample_name]["assigned"][taxon_name] = row_dict
 
     return parsed_stats
 
@@ -95,10 +96,9 @@ def calculate_abund_diver(sample_counts: Dict) -> pd.DataFrame:
     return div_abund_df
 
 
-def get_tax_data(path: Path) -> Dict:
-    kaiju_res = Path(path)
+def get_tax_data(paths: List[Path]) -> Dict:
 
-    parsed_stats = parse_kaiju2table(kaiju_res)
+    parsed_stats = parse_kaiju2table(paths)
 
     all_sample_counts = get_taxon_counts(parsed_stats)
 

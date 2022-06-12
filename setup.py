@@ -5,7 +5,7 @@ from setuptools import find_packages, setup
 with open("README.md", "r") as readme_file:
     readme = readme_file.read()
 
-install_requirements = ["pandas", "numpy", "plotly", "jinja2", "rich-click"]
+install_requirements = ["pandas", "numpy", "plotly", "jinja2", "rich", "rich-click"]
 
 test_requirements = [
     "pytest>=3",
