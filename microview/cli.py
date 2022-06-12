@@ -12,6 +12,7 @@ from microview.rendering import render_base
 
 @click.command(context_settings=dict(help_option_names=["-h", "--help"]))
 @click.option(
+    "-t",
     "--taxonomy",
     required=True,
     help="Path to taxonomy classification results",
@@ -24,7 +25,7 @@ def main(taxonomy: str) -> None:
     )
     reports = find_kaiju_reports(Path(taxonomy))
     try:
-        console.print(f"\n Found [bold]{len(list(reports))}[/] Kaiju reports... \n")
+        console.print(f"\n Found [bold]{len(reports)}[/] Kaiju reports... \n")
         tax_results = get_tax_data(reports)
         tax_plots = generate_taxo_plots(tax_results)
         render_base(tax_plots)
