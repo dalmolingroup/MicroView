@@ -6,42 +6,42 @@
 </head>
 
 <body>
-    <div>
-        <h1>MicroView</h1>
-        <main class="container">
-            <div class="row">
-                <section id="toc" class="three columns">
-                    <ul>
-                        <li>
-                            <a href="#taxonomy">Taxonomy</a>
-                            <ul>
-                                <li><a href="#classified-reads">Classified Reads</a></li>
-                                <li><a href="#common-taxa">Most Common Taxa</a></li>
-                                <li><a href="#diversity">Diversity and Abundance</a></li>
-                            </ul>
-                        </li>
+    <nav class="navbar" role="navigation" aria-label="main navigation">
+        <div class="navbar-brand">
+            <h1 class="navbar-item title is-1">MicroView</h1>
+        </div>
+    </nav>
+    <main class="container">
+        <div class="columns">
+            <section id="toc" class="column">
+                <aside class="menu">
+                    <p class="menu-label">Taxonomy</p>
+                    <ul class="menu-list">
+                        <li><a href="#classified-reads">Classified Reads</a></li>
+                        <li><a href="#common-taxa">Most Common Taxa</a></li>
+                        <li><a href="#diversity">Diversity and Abundance</a></li>
                     </ul>
-                </section>
-                <section id="taxonomy" class="nine columns">
-                    <h2>Taxonomic Results</h2>
-                    <div id="classified-reads">
-                        <h3>Number of Classified Reads</h3>
-                        {{ tax_plots.assigned_plot }}
-                    </div>
-                    <div id="common-taxa">
-                        <h3>Most Common Taxa</h3>
-                        <p>The percentage of reads among the top taxa in each sample</p>
-                        {{ tax_plots.common_taxas_plot }}
-                    </div>
-                    <div id="diversity">
-                        <h3>Diversity and Abundance</h3>
-                        <p>Shannon's diversity index and Pielou's evenness among all samples </p>
-                        {{ tax_plots.abund_div_plot }}
-                    </div>
-                </section>
-            </div>
-        </main>
-    </div>
+                </aside>
+            </section>
+            <section id="taxonomy" class="column is-three-quarters">
+                <h2 class="title">Taxonomic Results</h2>
+                <div id="classified-reads">
+                    <h3 class="title is-4">Number of Classified Reads</h3>
+                    {{ tax_plots.assigned_plot }}
+                </div>
+                <div id="common-taxa">
+                    <h3 class="title is-4">Most Common Taxa</h3>
+                    <p>The percentage of reads among the top taxa in each sample</p>
+                    {{ tax_plots.common_taxas_plot }}
+                </div>
+                <div id="diversity">
+                    <h3 class="title is-4">Diversity and Abundance</h3>
+                    <p>Shannon's diversity index and Pielou's evenness among all samples </p>
+                    {{ tax_plots.abund_div_plot }}
+                </div>
+            </section>
+        </div>
+    </main>
 </body>
 
 </html>
