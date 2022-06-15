@@ -27,12 +27,15 @@ def generate_taxo_plots(tax_data: Dict) -> Dict:
         tax_data["common taxas"], x="index", y="value", color="variable"
     )
 
+    common_taxas.update_traces(showlegend=False)
+
     common_taxas_html = export_to_html(common_taxas, "taxas-plot")
 
     abund_div = px.scatter(
         tax_data["abund and div"],
         x="Pielou Evenness",
         y="Shannon Diversity",
+        size="N Taxas",
         hover_data=["index"],
     )
 
