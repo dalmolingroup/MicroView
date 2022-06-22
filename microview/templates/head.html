@@ -2,9 +2,11 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>MicroView Results</title>
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-AMS-MML_SVG"></script>
+<style type="text/css">
+    {{ embed_local_file("assets/css/bulma_v0.9.4.min.css") }}
+</style>
+<script type="text/javascript">{{ embed_local_file("assets/js/MathJax-2.7.5.js") | safe }}</script>
 <script
     type="text/javascript">if (window.MathJax && window.MathJax.Hub && window.MathJax.Hub.Config) { window.MathJax.Hub.Config({ SVG: { font: "STIX-Web" } }); }</script>
 <script type="text/javascript">window.PlotlyConfig = { MathJaxConfig: 'local' };</script>
-<script src="https://cdn.plot.ly/plotly-2.12.1.min.js"></script>
+<script type="text/javascript">{{ embed_local_file("assets/js/plotly-2.12.1.min.js") | safe }}</script>
