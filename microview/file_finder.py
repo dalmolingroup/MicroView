@@ -1,7 +1,10 @@
 from pathlib import Path
-from typing import List
+from typing import List, Tuple
 
 
-def find_kaiju_reports(reports_path: Path) -> List[Path]:
-    report_paths: List[Path] = reports_path.glob("*_kaiju.tsv")
-    return list(report_paths)
+def find_reports(reports_path: Path) -> Tuple[List[Path], str]:
+    report_paths: List[Path] = list(reports_path.glob("*tsv"))
+    report_type = "kraken"
+    if all("kaiju" in path.name for path in report_paths):
+        report_type = "kaiju"
+    return report_paths, report_type

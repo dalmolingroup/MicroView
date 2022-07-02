@@ -1,36 +1,67 @@
-from collections import Counter
+# %%
+from collections import Counter, defaultdict
 from pathlib import Path
-from typing import Counter, Dict, List, Tuple
+from typing import Counter, Dict, List
 
 import numpy as np
 import pandas as pd
 from skbio.diversity import alpha_diversity
 
 
-def parse_kaiju2table(files: List[Path]) -> dict:
+def parse_reports(files: List[Path], report_type: str) -> dict:
     parsed_stats: Dict[str, dict] = {}
 
     for sample in files:
         df = pd.read_table(sample).replace({"None": np.NaN}, regex=True)
 
         sample_name = sample.name
-        parsed_stats[sample_name] = {"assigned": {}}
+        parsed_stats[sample_name] = defaultdict(lambda: {"n_reads": 0, "percent": 0})
+        parsed_stats[sample_name].update({"assigned": {}})
 
-        for row in df.itertuples():
-
-            row_dict = {"n_reads": row.reads, "percent": row.percent}
-            if row.taxon_name == "unclassified":
-                parsed_stats[sample_name]["unclassified"] = row_dict
-            elif row.taxon_name.startswith("cannot"):
-                parsed_stats[sample_name]["cannot be assigned"] = row_dict
-            else:
-                taxon_name: str = list(filter(None, row.taxon_name.split(";")))[-1]
-                parsed_stats[sample_name]["assigned"][taxon_name] = row_dict
+        if report_type == "kaiju":
+            parse_kaiju2table(sample_name, df, parsed_stats)
+        elif report_type == "kraken":
+            parse_kraken_report(sample_name, df, parsed_stats)
 
     return parsed_stats
 
 
-def get_taxon_counts(samples_stats) -> Tuple[dict, dict]:
+def parse_kaiju2table(sample_name: str, df, parsed_stats: Dict) -> None:
+
+    for row in df.itertuples():
+
+        row_dict = {"n_reads": row.reads, "percent": row.percent}
+        if row.taxon_name == "unclassified":
+            parsed_stats[sample_name].update({"unclassified": row_dict})
+        elif row.taxon_name.startswith("cannot"):
+            parsed_stats[sample_name].update({"cannot be assigned": row_dict})
+        else:
+            taxon_name: str = list(filter(None, row.taxon_name.split(";")))[-1]
+            parsed_stats[sample_name]["assigned"][taxon_name] = row_dict
+
+
+def parse_kraken_report(sample_name: str, df, parsed_stats: Dict) -> None:
+
+    df.columns = [
+        "percent",
+        "reads_root",
+        "reads",
+        "rank_code",
+        "taxid",
+        "taxon_name",
+    ]
+
+    for row in df.itertuples():
+        row_dict = {"n_reads": row.reads, "percent": row.percent}
+        if row.rank_code == "U":
+            parsed_stats[sample_name].update({"unclassified": row_dict})
+        else:
+            if row.reads > 0:
+                taxon_name = row.taxon_name.strip()
+                parsed_stats[sample_name]["assigned"][taxon_name] = row_dict
+
+
+def get_taxon_counts(samples_stats) -> Dict:
     all_sample_counts: Dict = {}
 
     for sample, data in samples_stats.items():
@@ -96,9 +127,9 @@ def calculate_abund_diver(sample_counts: Dict) -> pd.DataFrame:
     return div_abund_df
 
 
-def get_tax_data(paths: List[Path]) -> Dict:
+def get_tax_data(paths: List[Path], report_type: str) -> Dict:
 
-    parsed_stats = parse_kaiju2table(paths)
+    parsed_stats = parse_reports(paths, report_type)
 
     all_sample_counts = get_taxon_counts(parsed_stats)
 
