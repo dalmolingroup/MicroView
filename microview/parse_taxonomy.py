@@ -102,7 +102,9 @@ def get_common_taxas(sample_counts: Dict) -> Dict:
         sample_total = sample_counts[sample].total()
         most_common_vals = sample_counts[sample].most_common(5)
         other = sample_total - sum(v for _, v in most_common_vals)
-        most_common[sample] = {k: (v / sample_total) * 100 for k, v in most_common_vals}
+        most_common[sample] = {
+            k: round((v / sample_total) * 100, 2) for k, v in most_common_vals
+        }
         most_common[sample]["other"] = (other / sample_total) * 100
     return most_common
 
