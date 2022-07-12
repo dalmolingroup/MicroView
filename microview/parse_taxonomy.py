@@ -1,11 +1,12 @@
 # %%
 from collections import Counter, defaultdict
 from pathlib import Path
-from typing import Counter, Dict, List
+from typing import Counter, Dict, List, Tuple
 
 import numpy as np
 import pandas as pd
-from skbio.diversity import alpha_diversity
+import skbio.stats
+from skbio.diversity import alpha_diversity, beta_diversity
 
 
 def parse_reports(files: List[Path], report_type: str) -> dict:
@@ -109,7 +110,7 @@ def get_common_taxas(sample_counts: Dict) -> Dict:
     return most_common
 
 
-def calculate_abund_diver(sample_counts: Dict) -> pd.DataFrame:
+def calculate_abund_diver(sample_counts: Dict) -> Tuple[pd.DataFrame]:
     taxa_counts_df = pd.DataFrame(sample_counts).T.fillna(0)
     ids = taxa_counts_df.index
 
@@ -126,7 +127,15 @@ def calculate_abund_diver(sample_counts: Dict) -> pd.DataFrame:
         div_abund_df["N Taxas"]
     )
 
-    return div_abund_df
+    # Beta diversity analysis
+
+    beta_div = beta_diversity(
+        metric="braycurtis", counts=taxa_counts_df.to_numpy(), ids=ids, validate=True
+    )
+
+    betadiv_pcoa = skbio.stats.ordination.pcoa(beta_div)
+
+    return div_abund_df, betadiv_pcoa
 
 
 def get_tax_data(paths: List[Path], report_type: str) -> Dict:
@@ -139,7 +148,7 @@ def get_tax_data(paths: List[Path], report_type: str) -> Dict:
 
     most_common = get_common_taxas(all_sample_counts)
 
-    abund_div_df = calculate_abund_diver(all_sample_counts)
+    abund_div_df, betadiv_pcoa = calculate_abund_diver(all_sample_counts)
 
     stats_df = pd.DataFrame(n_reads).T.reset_index().melt(id_vars=["index"])
 
@@ -154,4 +163,5 @@ def get_tax_data(paths: List[Path], report_type: str) -> Dict:
         "sample n reads": stats_df,
         "common taxas": most_common_df,
         "abund and div": abund_div_df,
+        "beta div": betadiv_pcoa,
     }

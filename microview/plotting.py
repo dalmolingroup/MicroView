@@ -41,8 +41,37 @@ def generate_taxo_plots(tax_data: Dict) -> Dict:
 
     abund_div_html = export_to_html(abund_div, "abund-div-plot")
 
+    # Beta diversity plots
+
+    pcoa_embed = (
+        tax_data["beta div"].samples[["PC1", "PC2"]].rename_axis("sample").reset_index()
+    )
+    var_explained = (
+        tax_data["beta div"]
+        .proportion_explained[:9]
+        .to_frame(name="variance explained")
+        .reset_index()
+        .rename(columns={"index": "PC"})
+    )
+
+    pcoa_var = px.line(var_explained, x="PC", y="variance explained", text="PC")
+    pcoa_var.update_traces(textposition="bottom right")
+
+    pcoa_var_html = export_to_html(pcoa_var, "pcoa-explained-variance")
+
+    betadiv_pcoa = px.scatter(
+        pcoa_embed,
+        x="PC1",
+        y="PC2",
+        hover_data=["sample"],
+    )
+
+    betadiv_pcoa_html = export_to_html(betadiv_pcoa, "betadiv_pcoa")
+
     return {
         "assigned_plot": assigned_html,
         "common_taxas_plot": common_taxas_html,
         "abund_div_plot": abund_div_html,
+        "pcoa_var_plot": pcoa_var_html,
+        "beta_div_pcoa": betadiv_pcoa_html,
     }

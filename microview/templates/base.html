@@ -38,6 +38,11 @@
                     <h3 class="title is-4">Diversity and Abundance</h3>
                     <p>Shannon's diversity index and Pielou's evenness among all samples </p>
                     {{ tax_plots.abund_div_plot }}
+                    <h3 class="title is-5">Beta Diversity (Bray-Curtis)</h3>
+                    <p>Variance explained by each coordinate in a PCoA of Beta diversity across samples</p>
+                    {{tax_plots.pcoa_var_plot}}
+                    <p>Samples across PC1 and PC2</p>
+                    {{tax_plots.beta_div_pcoa}}
                 </div>
             </section>
         </div>
