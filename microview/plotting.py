@@ -21,13 +21,25 @@ def generate_taxo_plots(tax_data: Dict) -> Dict:
         tax_data["sample n reads"], x="index", y="value", color="variable"
     )
 
+    assigned.update_layout(
+        xaxis={"categoryorder": "category ascending"},
+    )
+
     assigned_html = export_to_html(assigned, "assigned-plot")
 
     common_taxas = px.bar(
-        tax_data["common taxas"], x="index", y="value", color="variable"
+        tax_data["common taxas"].sort_values(
+            by=["value", "variable"], ascending=[False, True]
+        ),
+        x="index",
+        y="value",
+        color="variable",
     )
 
     common_taxas.update_traces(showlegend=False)
+    common_taxas.update_layout(
+        xaxis={"categoryorder": "category ascending"},
+    )
 
     common_taxas_html = export_to_html(common_taxas, "taxas-plot")
 
