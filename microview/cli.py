@@ -30,7 +30,7 @@ def main(taxonomy: str) -> None:
         )
         tax_results = get_tax_data(reports, report_type)
         tax_plots = generate_taxo_plots(tax_results)
-        render_base(tax_plots)
+        render_base(tax_plots, Path(taxonomy))
         console.print(f"\n [bold][green]Done![/][/]")
     except Exception:
         console.print("\n An [bold][red]error[/][/] occurred!")

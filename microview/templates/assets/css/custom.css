@@ -1,0 +1,12 @@
+.rounded-right {
+    border: none;
+    border-radius: 0 25px 25px 0;
+}
+
+.border-left-darkgrey {
+    border-right: 1px solid darkgrey;
+}
+
+.shadow {
+    box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
+}
