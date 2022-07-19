@@ -2,9 +2,8 @@ from datetime import datetime
 from pathlib import Path
 from typing import Dict
 
-from jinja2 import Environment, PackageLoader
-
 from microview import __version__
+from microview.templates import JINJA_ENV
 
 
 def embed_local_file(filename, filedir="templates"):
@@ -17,13 +16,10 @@ def embed_local_file(filename, filedir="templates"):
 
 
 def render_base(tax_plots: Dict, dir_path: Path) -> None:
-    env = Environment(
-        loader=PackageLoader("microview", "templates"),
-    )
 
-    env.globals["embed_local_file"] = embed_local_file
+    JINJA_ENV.globals["embed_local_file"] = embed_local_file
 
-    base_template = env.get_template("base.html")
+    base_template = JINJA_ENV.get_template("base.html")
 
     curr_time = datetime.now().strftime("%Y-%m-%d, %H:%M")
     rendered_template = base_template.render(
