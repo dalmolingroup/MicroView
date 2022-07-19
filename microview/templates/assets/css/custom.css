@@ -4,9 +4,17 @@
 }
 
 .border-left-darkgrey {
-    border-right: 1px solid darkgrey;
+    border-bottom: 1px solid darkgrey;
+}
+
+@media only screen 
+and (min-width : 770px) {
+    .border-left-darkgrey {
+        border-right: 1px solid darkgrey;
+    }
 }
 
 .shadow {
     box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
 }
+
