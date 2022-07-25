@@ -48,7 +48,7 @@ def main(taxonomy: Path, csv_file: Path) -> None:
             f"\n Found [bold]{len(reports)}[/] {report_type.title()} reports... \n"
         )
         tax_results = get_tax_data(reports, report_type)
-        tax_plots = generate_taxo_plots(tax_results)
+        tax_plots = generate_taxo_plots(tax_results, parsed_result["dataframe"])
         render_base(tax_plots, data_source)
         console.print(f"\n [bold][green]Done![/][/]")
     except Exception:

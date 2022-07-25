@@ -1,5 +1,6 @@
-from typing import Dict
+from typing import Dict, Optional
 
+import pandas as pd
 import plotly.express as px
 from plotly import io
 from plotly.graph_objects import Figure
@@ -15,7 +16,46 @@ def export_to_html(fig: Figure, div_id: str) -> str:
     )
 
 
-def generate_taxo_plots(tax_data: Dict) -> Dict:
+def merge_with_contrasts(
+    df: pd.DataFrame, contrast_df: pd.DataFrame, left_colname: Optional[str] = "index"
+) -> pd.DataFrame:
+    merged_df = df.merge(
+        contrast_df, left_on=left_colname, right_on="sample", how="left"
+    )
+
+    return merged_df
+
+
+def plot_common_taxas(common_taxas_df: pd.DataFrame, **kwargs):
+
+    return px.bar(
+        common_taxas_df.sort_values(by=["value", "variable"], ascending=[False, True]),
+        x="index",
+        y="value",
+        color="variable",
+        **kwargs,
+    )
+
+
+def plot_abund_div(abund_div_df: pd.DataFrame, **kwargs):
+
+    return px.scatter(
+        abund_div_df,
+        x="Pielou Evenness",
+        y="Shannon Diversity",
+        size="N Taxas",
+        hover_data=["index"],
+        **kwargs,
+    )
+
+
+def plot_beta_pcoa(beta_pcoa: pd.DataFrame, **kwargs):
+    return px.scatter(beta_pcoa, x="PC1", y="PC2", hover_data=["sample"], **kwargs)
+
+
+def generate_taxo_plots(
+    tax_data: Dict, contrast_df: Optional[pd.DataFrame] = None
+) -> Dict:
 
     assigned = px.bar(
         tax_data["sample n reads"], x="index", y="value", color="variable"
@@ -26,32 +66,6 @@ def generate_taxo_plots(tax_data: Dict) -> Dict:
     )
 
     assigned_html = export_to_html(assigned, "assigned-plot")
-
-    common_taxas = px.bar(
-        tax_data["common taxas"].sort_values(
-            by=["value", "variable"], ascending=[False, True]
-        ),
-        x="index",
-        y="value",
-        color="variable",
-    )
-
-    common_taxas.update_traces(showlegend=False)
-    common_taxas.update_layout(
-        xaxis={"categoryorder": "category ascending"},
-    )
-
-    common_taxas_html = export_to_html(common_taxas, "taxas-plot")
-
-    abund_div = px.scatter(
-        tax_data["abund and div"],
-        x="Pielou Evenness",
-        y="Shannon Diversity",
-        size="N Taxas",
-        hover_data=["index"],
-    )
-
-    abund_div_html = export_to_html(abund_div, "abund-div-plot")
 
     # Beta diversity plots
 
@@ -69,14 +83,39 @@ def generate_taxo_plots(tax_data: Dict) -> Dict:
     pcoa_var = px.line(var_explained, x="PC", y="variance explained", text="PC")
     pcoa_var.update_traces(textposition="bottom right")
 
-    pcoa_var_html = export_to_html(pcoa_var, "pcoa-explained-variance")
+    if "group" in contrast_df.columns:
+        merged_taxas_df = merge_with_contrasts(tax_data["common taxas"], contrast_df)
 
-    betadiv_pcoa = px.scatter(
-        pcoa_embed,
-        x="PC1",
-        y="PC2",
-        hover_data=["sample"],
+        common_taxas = plot_common_taxas(merged_taxas_df, facet_col="group")
+        common_taxas.update_xaxes(matches=None)
+
+        abund_div = plot_abund_div(
+            merge_with_contrasts(tax_data["abund and div"], contrast_df),
+            color="group",
+        )
+
+        betadiv_pcoa = plot_beta_pcoa(
+            merge_with_contrasts(pcoa_embed, contrast_df, left_colname="sample"),
+            color="group",
+        )
+
+    else:
+        common_taxas = plot_common_taxas(tax_data["common taxas"])
+
+        abund_div = plot_abund_div(tax_data["abund and div"])
+
+        betadiv_pcoa = plot_beta_pcoa(pcoa_embed)
+
+    common_taxas.update_traces(showlegend=False)
+    common_taxas.update_layout(
+        xaxis={"categoryorder": "category ascending"},
     )
+
+    common_taxas_html = export_to_html(common_taxas, "taxas-plot")
+
+    abund_div_html = export_to_html(abund_div, "abund-div-plot")
+
+    pcoa_var_html = export_to_html(pcoa_var, "pcoa-explained-variance")
 
     betadiv_pcoa_html = export_to_html(betadiv_pcoa, "betadiv_pcoa")
 
