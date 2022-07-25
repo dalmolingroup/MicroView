@@ -1,5 +1,5 @@
 from pathlib import Path
-from typing import List, Tuple
+from typing import Dict, List, Tuple
 
 import pandas as pd
 
@@ -33,7 +33,7 @@ def validate_paths(sample_paths: List[Path], source_table: Path) -> List[Path]:
     return sample_paths
 
 
-def parse_source_table(source_table: Path) -> Tuple[List[Path], str]:
+def parse_source_table(source_table: Path) -> Dict:
 
     df = pd.read_csv(source_table)
 
@@ -43,4 +43,8 @@ def parse_source_table(source_table: Path) -> Tuple[List[Path], str]:
 
     validated_paths = validate_paths(sample_paths, source_table)
 
-    return validated_paths, report_type
+    return {
+        "paths": validated_paths,
+        "report_type": report_type,
+        "dataframe": df,
+    }

@@ -37,7 +37,9 @@ def main(taxonomy: Path, csv_file: Path) -> None:
     data_source = taxonomy if taxonomy else csv_file
 
     if csv_file is not None:
-        reports, report_type = parse_source_table(data_source)
+        parsed_result = parse_source_table(data_source)
+        reports = parsed_result["paths"]
+        report_type = parsed_result["report_type"]
     else:
         reports, report_type = find_reports(data_source)
 
