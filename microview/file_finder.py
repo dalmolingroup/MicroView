@@ -2,6 +2,34 @@ from pathlib import Path
 from typing import Dict, List, Tuple
 
 import pandas as pd
+from frictionless import validate
+
+from microview.schemas import contrast_table_schema
+
+
+def validate_against_schema(table: Path, schema: Path) -> Dict:
+
+    report = validate(
+        table,
+        schema=schema,
+    )
+
+    return {
+        "errors": report["stats"]["errors"],
+        "error_messages": report.flatten(["code", "message"]),
+    }
+
+
+def check_source_table_validation(report: Dict, console) -> bool:
+
+    if report["errors"] > 0:
+        console.print(
+            " [bold]Source table does not follow expected 'sample,group' schema\n"
+            " See the following errors raised during validation:[/]"
+        )
+        for error in report["error_messages"]:
+            console.print(f" [red][bold]{error[0]}[/]: {error[1]}[/]")
+        raise Exception("Source table does not follow schema")
 
 
 def detect_report_type(report_paths: List[Path]) -> str:
@@ -33,7 +61,11 @@ def validate_paths(sample_paths: List[Path], source_table: Path) -> List[Path]:
     return sample_paths
 
 
-def parse_source_table(source_table: Path) -> Dict:
+def parse_source_table(source_table: Path, console) -> Dict:
+
+    report = validate_against_schema(source_table, contrast_table_schema)
+
+    check_source_table_validation(report, console)
 
     df = pd.read_csv(source_table)
 

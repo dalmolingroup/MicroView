@@ -1,1 +1,2 @@
 recursive-include microview/templates/ *
+recursive-include microview/schemas/ *

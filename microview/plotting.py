@@ -83,7 +83,7 @@ def generate_taxo_plots(
     pcoa_var = px.line(var_explained, x="PC", y="variance explained", text="PC")
     pcoa_var.update_traces(textposition="bottom right")
 
-    if "group" in contrast_df.columns:
+    if contrast_df is not None and "group" in contrast_df.columns:
         merged_taxas_df = merge_with_contrasts(tax_data["common taxas"], contrast_df)
 
         common_taxas = plot_common_taxas(merged_taxas_df, facet_col="group")

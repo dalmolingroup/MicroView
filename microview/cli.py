@@ -36,21 +36,27 @@ def main(taxonomy: Path, csv_file: Path) -> None:
     )
     data_source = taxonomy if taxonomy else csv_file
 
-    if csv_file is not None:
-        parsed_result = parse_source_table(data_source)
-        reports = parsed_result["paths"]
-        report_type = parsed_result["report_type"]
-    else:
-        reports, report_type = find_reports(data_source)
+    with console.status("[bold]Reading report...[/]"):
+        if csv_file is not None:
+            parsed_result = parse_source_table(data_source, console)
+            reports = parsed_result["paths"]
+            report_type = parsed_result["report_type"]
+        else:
+            reports, report_type = find_reports(data_source)
+            parsed_result = None
 
     try:
         console.print(
             f"\n Found [bold]{len(reports)}[/] {report_type.title()} reports... \n"
         )
-        tax_results = get_tax_data(reports, report_type)
-        tax_plots = generate_taxo_plots(tax_results, parsed_result["dataframe"])
-        render_base(tax_plots, data_source)
-        console.print(f"\n [bold][green]Done![/][/]")
+        with console.status("[bold]Calculating metrics...[/]"):
+            tax_results = get_tax_data(reports, report_type)
+            # TODO: Improve this double check
+            if parsed_result is not None:
+                tax_plots = generate_taxo_plots(tax_results, parsed_result["dataframe"])
+            else:
+                tax_plots = generate_taxo_plots(tax_results)
+            render_base(tax_plots, data_source)
+        console.print(f"\n [bold][green]Done![/][/]\n")
     except Exception:
-        console.print("\n An [bold][red]error[/][/] occurred!")
-        raise (Exception)
+        console.print_exception(show_locals=True)
