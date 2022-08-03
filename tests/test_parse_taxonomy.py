@@ -36,4 +36,4 @@ def test_calculate_abund_diver(all_sample_counts):
 
     abund_div_df = calculate_abund_diver(all_sample_counts)
 
-    assert round(abund_div_df["Shannon Diversity"][1], 2) == 0.92
+    assert round(abund_div_df[0]["Shannon Diversity"][1], 2) == 0.92
