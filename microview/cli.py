@@ -42,7 +42,7 @@ def main(taxonomy: Path, csv_file: Path) -> None:
             reports = parsed_result["paths"]
             report_type = parsed_result["report_type"]
         else:
-            reports, report_type = find_reports(data_source)
+            reports, report_type = find_reports(data_source, console)
             parsed_result = None
 
     try:

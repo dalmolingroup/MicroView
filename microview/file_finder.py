@@ -2,25 +2,35 @@ from pathlib import Path
 from typing import Dict, List, Tuple
 
 import pandas as pd
-from frictionless import validate
+from frictionless import checks, validate
 
-from microview.schemas import contrast_table_schema
+from microview.schemas import contrast_table_schema, kaiju_report_schema
 
 
-def validate_against_schema(table: Path, schema: Path) -> Dict:
+def validate_against_schema(table: Path, **kwargs) -> Dict:
 
     report = validate(
         table,
-        schema=schema,
+        **kwargs,
     )
 
     return {
+        "report": table,
         "errors": report["stats"]["errors"],
         "error_messages": report.flatten(["code", "message"]),
     }
 
 
-def check_source_table_validation(report: Dict, console) -> bool:
+def is_kraken_report(report: Dict) -> bool:
+    if report["errors"] == 0 or all(
+        report_error[0] == "duplicate-label"
+        for report_error in report["error_messages"]
+    ):
+        return True
+    return False
+
+
+def check_source_table_validation(report: Dict, console) -> None:
 
     if report["errors"] > 0:
         console.print(
@@ -32,17 +42,46 @@ def check_source_table_validation(report: Dict, console) -> bool:
         raise Exception("Source table does not follow schema")
 
 
-def detect_report_type(report_paths: List[Path]) -> str:
-    report_type = "kraken"
-    if all("kaiju" in path.name for path in report_paths):
+def detect_report_type(report_paths: List[Path], console) -> Tuple[List[Path], str]:
+
+    kaiju_validated = [
+        validate_against_schema(report, schema=kaiju_report_schema)
+        for report in report_paths
+    ]
+    kaiju_reports = [
+        kaiju_report["report"]
+        for kaiju_report in kaiju_validated
+        if kaiju_report["errors"] == 0
+    ]
+    if len(kaiju_reports) == 0:
+
+        # TODO: Improve Kraken validation
+        kraken_validated = [
+            validate_against_schema(
+                report, checks=[checks.table_dimensions(num_fields=6)]
+            )
+            for report in report_paths
+        ]
+        kraken_reports = [
+            kraken_report["report"]
+            for kraken_report in kraken_validated
+            if is_kraken_report(kraken_report)
+        ]
+
+        if len(kraken_reports) == 0:
+            console.print("\n [red]Could not find any valid reports[/]")
+            raise Exception("Could not find any valid files.")
+        else:
+            report_type = "kraken"
+            return kraken_reports, report_type
+    else:
         report_type = "kaiju"
+        return kaiju_reports, report_type
 
-    return report_type
 
-
-def find_reports(reports_path: Path) -> Tuple[List[Path], str]:
-    report_paths: List[Path] = list(reports_path.glob("*tsv"))
-    report_type = detect_report_type(report_paths)
+def find_reports(reports_path: Path, console) -> Tuple[List[Path], str]:
+    file_paths: List[Path] = list(reports_path.glob("*tsv"))
+    report_paths, report_type = detect_report_type(file_paths, console)
     return report_paths, report_type
 
 
@@ -63,7 +102,7 @@ def validate_paths(sample_paths: List[Path], source_table: Path) -> List[Path]:
 
 def parse_source_table(source_table: Path, console) -> Dict:
 
-    report = validate_against_schema(source_table, contrast_table_schema)
+    report = validate_against_schema(source_table, schema=contrast_table_schema)
 
     check_source_table_validation(report, console)
 
@@ -71,12 +110,12 @@ def parse_source_table(source_table: Path, console) -> Dict:
 
     sample_paths: List[Path] = [Path(sample) for sample in df["sample"].to_list()]
 
-    report_type = detect_report_type(sample_paths)
-
     validated_paths = validate_paths(sample_paths, source_table)
 
+    report_paths, report_type = detect_report_type(validated_paths, console)
+
     return {
-        "paths": validated_paths,
+        "paths": report_paths,
         "report_type": report_type,
         "dataframe": df,
     }
