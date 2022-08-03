@@ -1,6 +1,5 @@
 from typing import Dict, Optional
 
-import pandas as pd
 import plotly.express as px
 from plotly import io
 from plotly.graph_objects import Figure
@@ -26,9 +25,7 @@ def export_to_html(fig: Figure, div_id: str) -> str:
     )
 
 
-def merge_with_contrasts(
-    df: pd.DataFrame, contrast_df: pd.DataFrame, left_colname: Optional[str] = "index"
-) -> pd.DataFrame:
+def merge_with_contrasts(df, contrast_df, left_colname: Optional[str] = "index"):
     """
     Merges a dataframe with the dataframe containing contrasts (or groups)
     """
@@ -39,7 +36,7 @@ def merge_with_contrasts(
     return merged_df
 
 
-def plot_common_taxas(common_taxas_df: pd.DataFrame, **kwargs):
+def plot_common_taxas(common_taxas_df, **kwargs):
     """
     Generate bar plot with most common taxas
     """
@@ -52,7 +49,7 @@ def plot_common_taxas(common_taxas_df: pd.DataFrame, **kwargs):
     )
 
 
-def plot_abund_div(abund_div_df: pd.DataFrame, **kwargs):
+def plot_abund_div(abund_div_df, **kwargs):
     """
     Generate scatter plot of Pielou's Evenness and Shannon's Diversity (alpha)
     """
@@ -66,16 +63,14 @@ def plot_abund_div(abund_div_df: pd.DataFrame, **kwargs):
     )
 
 
-def plot_beta_pcoa(beta_pcoa: pd.DataFrame, **kwargs):
+def plot_beta_pcoa(beta_pcoa, **kwargs):
     """
     Generate scatter plot of two first coordinates of Beta Diversity PCoA
     """
     return px.scatter(beta_pcoa, x="PC1", y="PC2", hover_data=["sample"], **kwargs)
 
 
-def generate_taxo_plots(
-    tax_data: Dict, contrast_df: Optional[pd.DataFrame] = None
-) -> Dict:
+def generate_taxo_plots(tax_data: Dict, contrast_df=None) -> Dict:
     """
     Get all taxonomy plots
 

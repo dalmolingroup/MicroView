@@ -1,8 +1,8 @@
 from pathlib import Path
 from typing import Dict, List, Tuple
 
-import pandas as pd
 from frictionless import checks, validate
+from pandas import read_csv
 
 from microview.schemas import contrast_table_schema, kaiju_report_schema
 
@@ -183,7 +183,7 @@ def parse_source_table(source_table: Path, console) -> Dict:
 
     check_source_table_validation(report, console)
 
-    df = pd.read_csv(source_table)
+    df = read_csv(source_table)
 
     sample_paths: List[Path] = [Path(sample) for sample in df["sample"].to_list()]
 

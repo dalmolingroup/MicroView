@@ -2,10 +2,10 @@ from collections import Counter, defaultdict
 from pathlib import Path
 from typing import Counter, Dict, List, Tuple
 
-import numpy as np
 import pandas as pd
-import skbio.stats
+from numpy import NaN, count_nonzero, log
 from skbio.diversity import alpha_diversity, beta_diversity
+from skbio.stats.ordination import pcoa
 
 
 def parse_reports(files: List[Path], report_type: str) -> dict:
@@ -25,7 +25,7 @@ def parse_reports(files: List[Path], report_type: str) -> dict:
     parsed_stats: Dict[str, dict] = {}
 
     for sample in files:
-        df = pd.read_table(sample).replace({"None": np.NaN}, regex=True)
+        df = pd.read_table(sample).replace({"None": NaN}, regex=True)
 
         sample_name = sample.name
         parsed_stats[sample_name] = defaultdict(lambda: {"n_reads": 0, "percent": 0})
@@ -181,10 +181,10 @@ def calculate_abund_diver(sample_counts: Dict) -> Tuple[pd.DataFrame]:
         shannon_div, columns=["Shannon Diversity"]
     ).reset_index()
 
-    div_abund_df["N Taxas"] = np.count_nonzero(taxa_counts_df.to_numpy(), axis=1)
+    div_abund_df["N Taxas"] = count_nonzero(taxa_counts_df.to_numpy(), axis=1)
 
     # Pielou's evenness = diversity divided by the log specnumber
-    div_abund_df["Pielou Evenness"] = div_abund_df["Shannon Diversity"] / np.log(
+    div_abund_df["Pielou Evenness"] = div_abund_df["Shannon Diversity"] / log(
         div_abund_df["N Taxas"]
     )
 
@@ -194,7 +194,7 @@ def calculate_abund_diver(sample_counts: Dict) -> Tuple[pd.DataFrame]:
         metric="braycurtis", counts=taxa_counts_df.to_numpy(), ids=ids, validate=True
     )
 
-    betadiv_pcoa = skbio.stats.ordination.pcoa(beta_div)
+    betadiv_pcoa = pcoa(beta_div)
 
     return div_abund_df, betadiv_pcoa
 
