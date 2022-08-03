@@ -99,7 +99,7 @@ def build_taxonomy_stats(parsed_stats: Dict) -> Dict:
 def get_common_taxas(sample_counts: Dict) -> Dict:
     most_common: Dict = {}
     for sample in sample_counts.keys():
-        sample_total = sample_counts[sample].total()
+        sample_total = sum(sample_counts[sample].values())
         most_common_vals = sample_counts[sample].most_common(5)
         other = sample_total - sum(v for _, v in most_common_vals)
         most_common[sample] = {
