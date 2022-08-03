@@ -1,6 +1,3 @@
-from ctypes import resize
-from random import sample
-
 from microview.parse_taxonomy import (
     build_taxonomy_stats,
     calculate_abund_diver,
