@@ -50,7 +50,7 @@ setup(
     packages=find_packages(include=["microview", "microview.*"]),
     test_suite="tests",
     tests_require=test_requirements,
-    extras_require=extra_requirements,
+    extras_require={"dev": extra_requirements},
     url="https://github.com/jvfe/microview",
     project_urls={
         "Bug Tracker": "https://github.com/jvfe/microview/issues",
