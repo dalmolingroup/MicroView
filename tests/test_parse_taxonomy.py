@@ -1,7 +1,7 @@
 from microview.parse_taxonomy import (
-    build_taxonomy_stats,
     calculate_abund_diver,
     get_common_taxas,
+    get_read_assignment,
     get_taxon_counts,
 )
 
@@ -16,7 +16,7 @@ def test_get_taxon_counts(parsed_stats):
 
 def test_build_taxonomy_stats(parsed_stats):
 
-    n_reads = build_taxonomy_stats(parsed_stats)
+    n_reads = get_read_assignment(parsed_stats)
 
     assert n_reads["sample2"]["assigned"] == 93.75
     assert n_reads["sample2"]["unassigned"] == 6.25
