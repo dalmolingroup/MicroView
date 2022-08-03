@@ -8,6 +8,18 @@ from microview.schemas import contrast_table_schema, kaiju_report_schema
 
 
 def get_validation_dict(table: Path, **kwargs) -> Dict:
+    """
+    Validate data against checks or schema
+
+    Args:
+        table (Path): Path to tabular data to validate
+        **kwargs: Other arguments, like a checklist or a schema
+
+    Returns:
+        dict: Dictionary containing three keys: 'report', for the report path
+            itself; 'errors', with the number of errors; and 'error_messages', a
+            list containing error codes and their respective messages
+    """
     report = validate(
         table,
         **kwargs,
@@ -21,6 +33,16 @@ def get_validation_dict(table: Path, **kwargs) -> Dict:
 
 
 def is_kraken_report(report: Dict) -> bool:
+    """
+    Check if validation report corresponds to accurate Kraken result
+
+    Args:
+        report (dict): A dictionary output from
+            microview.file_finder.get_validation_dict
+
+    Returns:
+        bool: True if report, False if not.
+    """
     if report["errors"] == 0 or all(
         report_error[0] == "duplicate-label"
         for report_error in report["error_messages"]
@@ -30,7 +52,15 @@ def is_kraken_report(report: Dict) -> bool:
 
 
 def check_source_table_validation(report: Dict, console) -> None:
+    """
+    Check if source table validation didn't raise errors
 
+    Args:
+        report (dict): A result dictionary from
+            microview.file_finder.get_validation_dict
+        console: Console to print the outputs to
+
+    """
     if report["errors"] > 0:
         console.print(
             " [bold]Source table does not follow expected 'sample,group' schema\n"
@@ -42,7 +72,20 @@ def check_source_table_validation(report: Dict, console) -> None:
 
 
 def detect_report_type(report_paths: List[Path], console) -> Tuple[List[Path], str]:
+    """
+    Detect report type from file paths
 
+    Validates tables present in report_paths against schemas or
+    custom checks, inferring the type of report (kaiju or kraken).
+
+    Args:
+        report_paths (list): A list containing all report paths to validate.
+        console: Console to print messages to
+
+    Returns:
+        tuple: First element the list of paths that pass the schema,
+            second element the report type in string form.
+    """
     kaiju_validated = [
         get_validation_dict(report, schema=kaiju_report_schema)
         for report in report_paths
@@ -77,13 +120,34 @@ def detect_report_type(report_paths: List[Path], console) -> Tuple[List[Path], s
 
 
 def find_reports(reports_path: Path, console) -> Tuple[List[Path], str]:
+    """
+    Find reports in given path
+
+    Args:
+        reports_path (Path): Path to find the reports from
+        console: Console to print messages to
+
+    Returns:
+        tuple: First element the list of report_paths validated against
+            schemas or checks and second element the type detected from
+            said paths.
+    """
     file_paths: List[Path] = list(reports_path.glob("*tsv"))
     report_paths, report_type = detect_report_type(file_paths, console)
     return report_paths, report_type
 
 
 def validate_paths(sample_paths: List[Path], source_table: Path) -> List[Path]:
+    """
+    Check if paths in source table are real paths and readable
 
+    Args:
+        sample_paths (list): List of paths to validate
+        source_table (path): Path to source table
+
+    Returns:
+        list: A list containing the paths, now validated.
+    """
     if all(sample_path.exists for sample_path in sample_paths) != True:
         full_sample_paths: List[Path] = [
             source_table.parent.joinpath(sample) for sample in sample_paths
@@ -98,7 +162,23 @@ def validate_paths(sample_paths: List[Path], source_table: Path) -> List[Path]:
 
 
 def parse_source_table(source_table: Path, console) -> Dict:
+    """
+    Parses source tables
 
+    Validates tables and samples against checks and schemas, reads
+    in the source table itself and returns a dict with a list of
+    validated reports, the report type detected and the source table
+    itself, in a pandas DataFrame.
+
+    Args:
+        source_table (Path): Path to the csv source table
+        console: Console to print messages to, utilized by subfunctions.
+
+    Returns:
+        dict: Dict with 'paths', containing the report paths; 'report_type',
+            with the detected report type; and 'dataframe' with the source
+            table itself.
+    """
     report = get_validation_dict(source_table, schema=contrast_table_schema)
 
     check_source_table_validation(report, console)
