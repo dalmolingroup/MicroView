@@ -7,6 +7,16 @@ from plotly.graph_objects import Figure
 
 
 def export_to_html(fig: Figure, div_id: str) -> str:
+    """
+    Export plotly graph to html format
+
+    Args:
+        fig (Figure): Plotly figure to export
+        div_id (str): String to use as the plot's div id.
+
+    Returns:
+        str: HTML string with plot
+    """
     return io.to_html(
         fig,
         full_html=False,
@@ -19,6 +29,9 @@ def export_to_html(fig: Figure, div_id: str) -> str:
 def merge_with_contrasts(
     df: pd.DataFrame, contrast_df: pd.DataFrame, left_colname: Optional[str] = "index"
 ) -> pd.DataFrame:
+    """
+    Merges a dataframe with the dataframe containing contrasts (or groups)
+    """
     merged_df = df.merge(
         contrast_df, left_on=left_colname, right_on="sample", how="left"
     )
@@ -27,7 +40,9 @@ def merge_with_contrasts(
 
 
 def plot_common_taxas(common_taxas_df: pd.DataFrame, **kwargs):
-
+    """
+    Generate bar plot with most common taxas
+    """
     return px.bar(
         common_taxas_df.sort_values(by=["value", "variable"], ascending=[False, True]),
         x="index",
@@ -38,7 +53,9 @@ def plot_common_taxas(common_taxas_df: pd.DataFrame, **kwargs):
 
 
 def plot_abund_div(abund_div_df: pd.DataFrame, **kwargs):
-
+    """
+    Generate scatter plot of Pielou's Evenness and Shannon's Diversity (alpha)
+    """
     return px.scatter(
         abund_div_df,
         x="Pielou Evenness",
@@ -50,13 +67,29 @@ def plot_abund_div(abund_div_df: pd.DataFrame, **kwargs):
 
 
 def plot_beta_pcoa(beta_pcoa: pd.DataFrame, **kwargs):
+    """
+    Generate scatter plot of two first coordinates of Beta Diversity PCoA
+    """
     return px.scatter(beta_pcoa, x="PC1", y="PC2", hover_data=["sample"], **kwargs)
 
 
 def generate_taxo_plots(
     tax_data: Dict, contrast_df: Optional[pd.DataFrame] = None
 ) -> Dict:
+    """
+    Get all taxonomy plots
 
+    Master function to generate all plots to be used in the final report.
+
+    Args:
+        tax_data (dict): Dict resulting from
+            microview.parse_taxonomy.get_tax_data
+        contrast_df (pd.DataFrame): Dataframe with sample names and
+            contrasts, if available.
+
+    Returns:
+        dict: Dict containing all plots, one for each key.
+    """
     assigned = px.bar(
         tax_data["sample n reads"], x="index", y="value", color="variable"
     )
