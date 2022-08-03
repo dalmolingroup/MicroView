@@ -7,7 +7,9 @@ from microview.templates import JINJA_ENV
 
 
 def embed_local_file(filename, filedir="templates"):
-
+    """
+    Embed local file into template
+    """
     herepath = Path(__file__).parent.resolve()
     fullpath = herepath.joinpath(filedir, filename)
 
@@ -16,7 +18,14 @@ def embed_local_file(filename, filedir="templates"):
 
 
 def render_base(tax_plots: Dict, dir_path: Path) -> None:
+    """
+    Render base template
 
+    Args:
+        tax_plots (dict): Dict containing results from
+            microview.plotting.generate_taxo_plots
+        dir_path (Path): Path to directory containing report files
+    """
     JINJA_ENV.globals["embed_local_file"] = embed_local_file
 
     base_template = JINJA_ENV.get_template("base.html")
