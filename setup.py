@@ -6,6 +6,7 @@ with open("README.md", "r") as readme_file:
     readme = readme_file.read()
 
 install_requirements = [
+    "scikit-bio",
     "pandas",
     "numpy",
     "plotly",
