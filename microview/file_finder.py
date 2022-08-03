@@ -13,7 +13,7 @@ def get_validation_dict(table: Path, **kwargs) -> Dict:
 
     Args:
         table (Path): Path to tabular data to validate
-        **kwargs: Other arguments, like a checklist or a schema
+        **kwargs (**kwargs): Other arguments, like a checklist or a schema
 
     Returns:
         dict: Dictionary containing three keys: 'report', for the report path
@@ -58,7 +58,7 @@ def check_source_table_validation(report: Dict, console) -> None:
     Args:
         report (dict): A result dictionary from
             microview.file_finder.get_validation_dict
-        console: Console to print the outputs to
+        console (rich.Console): Console to print the outputs to
 
     """
     if report["errors"] > 0:
@@ -81,7 +81,7 @@ def detect_report_type(report_paths: List[Path], console) -> Tuple[List[Path], s
 
     Args:
         report_paths (list): A list containing all report paths to validate.
-        console: Console to print messages to
+        console (rich.Console): Console to print messages to
 
     Returns:
         tuple: First element the list of paths that pass the schema,
@@ -126,7 +126,7 @@ def find_reports(reports_path: Path, console) -> Tuple[List[Path], str]:
 
     Args:
         reports_path (Path): Path to find the reports from
-        console: Console to print messages to
+        console (rich.Console): Console to print messages to
 
     Returns:
         tuple: First element the list of report_paths validated against
@@ -173,7 +173,7 @@ def parse_source_table(source_table: Path, console) -> Dict:
 
     Args:
         source_table (Path): Path to the csv source table
-        console: Console to print messages to, utilized by subfunctions.
+        console (rich.Console): Console to print messages to, utilized by subfunctions.
 
     Returns:
         dict: Dict with 'paths', containing the report paths; 'report_type',

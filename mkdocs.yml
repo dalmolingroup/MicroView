@@ -1,0 +1,19 @@
+site_name: MicroView
+site_description: A reporting tool for taxonomic classification
+site_author: jvfe
+site_url: https://jvfe.github.io/microview/
+nav:
+  - Home: index.md
+  - Reference:
+      - CLI module: reference/cli.md
+      - Internal API:
+          - Taxonomy Parser: reference/taxonomy_parser.md
+          - File finder: reference/file_finder.md
+          - Plotting: reference/plotting.md
+          - Rendering: reference/rendering.md
+repo_url: https://github.com/jvfe/microview
+theme:
+  name: "readthedocs"
+plugins:
+  - search
+  - mkdocstrings
