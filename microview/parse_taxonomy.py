@@ -104,7 +104,7 @@ def get_taxon_counts(samples_stats: Dict) -> Dict:
     return all_sample_counts
 
 
-def build_taxonomy_stats(parsed_stats: Dict) -> Dict:
+def get_read_assignment(parsed_stats: Dict) -> Dict:
     """
     Get number of assigned/unassigned reads for each sample
 
@@ -222,7 +222,7 @@ def get_tax_data(paths: List[Path], report_type: str) -> Dict:
 
     all_sample_counts = get_taxon_counts(parsed_stats)
 
-    n_reads = build_taxonomy_stats(parsed_stats)
+    n_reads = get_read_assignment(parsed_stats)
 
     most_common = get_common_taxas(all_sample_counts)
 
