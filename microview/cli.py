@@ -27,9 +27,21 @@ from microview.rendering import render_base
     "-df",
     "--csv-file",
     type=click.Path(path_type=Path),
-    help="CSV table with taxonomy classification results paths",
+    help="2-column CSV table (sample,group) with taxonomy classification results paths",
 )
 def main(taxonomy: Path, csv_file: Path) -> None:
+    """
+    MicroView, a reporting tool for taxonomic classification
+
+    MicroView agreggates reports from taxonomic classification tools,
+    such as Kaiju and Kraken.
+
+    You can provide either a path to results
+    in the -t argument or, with -df, a path to a 2-column CSV file,
+    the first column sample paths and the second containing group names
+    or contrasts.
+    """
+
     console = Console(stderr=True, highlight=False)
     console.print(
         f"\n [bold]Running [blue]Micro[/][red]View[/] :glasses: [dim]v{mv_version}[/] \n"
@@ -57,6 +69,6 @@ def main(taxonomy: Path, csv_file: Path) -> None:
             else:
                 tax_plots = generate_taxo_plots(tax_results)
             render_base(tax_plots, data_source)
-        console.print(f"\n [bold][green]Done![/][/]\n")
+        console.print(f"\n Done!\n", style="bold green")
     except Exception:
         console.print_exception(show_locals=True)

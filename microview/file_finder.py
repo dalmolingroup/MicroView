@@ -63,8 +63,9 @@ def check_source_table_validation(report: Dict, console) -> None:
     """
     if report["errors"] > 0:
         console.print(
-            " [bold]Source table does not follow expected 'sample,group' schema\n"
-            " See the following errors raised during validation:[/]"
+            " Source table does not follow expected 'sample,group' schema\n"
+            " See the following errors raised during validation:",
+            style="bold",
         )
         for error in report["error_messages"]:
             console.print(f" [red][bold]{error[0]}[/]: {error[1]}[/]")
@@ -109,7 +110,7 @@ def detect_report_type(report_paths: List[Path], console) -> Tuple[List[Path], s
         ]
 
         if len(kraken_reports) == 0:
-            console.print("\n [red]Could not find any valid reports[/]")
+            console.print("\n Could not find any valid reports", style="red")
             raise Exception("Could not find any valid files.")
         else:
             report_type = "kraken"
