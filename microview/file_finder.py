@@ -7,8 +7,7 @@ from frictionless import checks, validate
 from microview.schemas import contrast_table_schema, kaiju_report_schema
 
 
-def validate_against_schema(table: Path, **kwargs) -> Dict:
-
+def get_validation_dict(table: Path, **kwargs) -> Dict:
     report = validate(
         table,
         **kwargs,
@@ -45,7 +44,7 @@ def check_source_table_validation(report: Dict, console) -> None:
 def detect_report_type(report_paths: List[Path], console) -> Tuple[List[Path], str]:
 
     kaiju_validated = [
-        validate_against_schema(report, schema=kaiju_report_schema)
+        get_validation_dict(report, schema=kaiju_report_schema)
         for report in report_paths
     ]
     kaiju_reports = [
@@ -57,9 +56,7 @@ def detect_report_type(report_paths: List[Path], console) -> Tuple[List[Path], s
 
         # TODO: Improve Kraken validation
         kraken_validated = [
-            validate_against_schema(
-                report, checks=[checks.table_dimensions(num_fields=6)]
-            )
+            get_validation_dict(report, checks=[checks.table_dimensions(num_fields=6)])
             for report in report_paths
         ]
         kraken_reports = [
@@ -102,7 +99,7 @@ def validate_paths(sample_paths: List[Path], source_table: Path) -> List[Path]:
 
 def parse_source_table(source_table: Path, console) -> Dict:
 
-    report = validate_against_schema(source_table, schema=contrast_table_schema)
+    report = get_validation_dict(source_table, schema=contrast_table_schema)
 
     check_source_table_validation(report, console)
 
