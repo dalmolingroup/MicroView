@@ -6,6 +6,7 @@ with open("README.md", "r") as readme_file:
     readme = readme_file.read()
 
 install_requirements = [
+    "scipy<=1.8",
     "scikit-bio",
     "pandas",
     "numpy",
