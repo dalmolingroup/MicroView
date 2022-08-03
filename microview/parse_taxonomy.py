@@ -9,6 +9,19 @@ from skbio.diversity import alpha_diversity, beta_diversity
 
 
 def parse_reports(files: List[Path], report_type: str) -> dict:
+    """
+    Parse taxonomy results
+
+    Args:
+        files (list): List of file paths to read reports from
+        report_type (str): String denoting report type, kaiju or kraken
+
+    Returns:
+        dict: Dict of each sample as key and every value differentiating
+            assigned (and respective taxons) and unassigned read counts and
+            percentages.
+
+    """
     parsed_stats: Dict[str, dict] = {}
 
     for sample in files:
@@ -27,7 +40,9 @@ def parse_reports(files: List[Path], report_type: str) -> dict:
 
 
 def parse_kaiju2table(sample_name: str, df, parsed_stats: Dict) -> None:
-
+    """
+    Parses kaiju report
+    """
     for row in df.itertuples():
 
         row_dict = {"n_reads": row.reads, "percent": row.percent}
@@ -41,7 +56,9 @@ def parse_kaiju2table(sample_name: str, df, parsed_stats: Dict) -> None:
 
 
 def parse_kraken_report(sample_name: str, df, parsed_stats: Dict) -> None:
-
+    """
+    Parse Kraken-style report
+    """
     df.columns = [
         "percent",
         "reads_root",
@@ -61,7 +78,18 @@ def parse_kraken_report(sample_name: str, df, parsed_stats: Dict) -> None:
                 parsed_stats[sample_name]["assigned"][taxon_name] = row_dict
 
 
-def get_taxon_counts(samples_stats) -> Dict:
+def get_taxon_counts(samples_stats: Dict) -> Dict:
+    """
+    Agreggates taxon counts across all samples into single Counter
+
+    Args:
+        samples_stats (dict): Dict resulting from
+            microview.parse_taxonomy.parse_reports
+
+    Returns:
+        Counter: Counter containing agreggated read counts across all samples
+
+    """
     all_sample_counts: Dict = {}
 
     for sample, data in samples_stats.items():
@@ -77,6 +105,17 @@ def get_taxon_counts(samples_stats) -> Dict:
 
 
 def build_taxonomy_stats(parsed_stats: Dict) -> Dict:
+    """
+    Get number of assigned/unassigned reads for each sample
+
+    Args:
+        parsed_stats (dict): Dict result from
+            microview.parse_taxonomy.parse_reports
+
+    Returns:
+        dict: Dict differentiating assigned / unassigned number of reads
+            for each sample.
+    """
     results: Dict[str, dict] = {}
     for sample_name, _ in parsed_stats.items():
         results[sample_name] = {"assigned": 0, "unassigned": 0}
@@ -97,6 +136,17 @@ def build_taxonomy_stats(parsed_stats: Dict) -> Dict:
 
 
 def get_common_taxas(sample_counts: Dict) -> Dict:
+    """
+    Get 5 most common taxas for each sample
+
+    Args:
+        sample_counts (dict): Dict resulting from
+            microview.parse_taxonomy.get_taxon_counts
+
+    Returns:
+        dict: Dict with 5 most common taxons for each sample
+            plus an 'other' key agreggating other taxon counts.
+    """
     most_common: Dict = {}
     for sample in sample_counts.keys():
         sample_total = sum(sample_counts[sample].values())
@@ -110,6 +160,18 @@ def get_common_taxas(sample_counts: Dict) -> Dict:
 
 
 def calculate_abund_diver(sample_counts: Dict) -> Tuple[pd.DataFrame]:
+    """
+    Calculate alpha diversity, beta diversity and pielou evenness in samples
+
+    Args:
+        sample_counts (dict): Dict resulting from
+            microview.parse_taxonomy.get_taxon_counts
+
+    Returns:
+        tuple: Two dataframes, first one containing sample name,
+            number of taxas, alpha diversity and Pielou's evenness;
+            Second one containing a PCoA of the beta diversity result.
+    """
     taxa_counts_df = pd.DataFrame(sample_counts).T.fillna(0)
     ids = taxa_counts_df.index
 
@@ -138,6 +200,23 @@ def calculate_abund_diver(sample_counts: Dict) -> Tuple[pd.DataFrame]:
 
 
 def get_tax_data(paths: List[Path], report_type: str) -> Dict:
+    """
+    Master function for generating stats from taxonomic classification results
+
+    This function handles parsing reports, agreggating taxon counts, generating
+    read assignment statistics and, most importantly, generating diversity and
+    abundance metrics.
+
+    Args:
+        paths (list): List of paths of where to read the reports from
+        report_type (str): Detected report type, kaiju or kraken.
+
+    Returns:
+        dict: Dict with 4 keys: 'sample n reads' containing read assignment stats;
+            'common taxas' containing the 5 most common taxas and their respective
+            counts in each sample; 'abund and div' containing abundance and diversity
+            metrics; and 'beta div' containing a PCoA of beta diversity results.
+    """
 
     parsed_stats = parse_reports(paths, report_type)
 
