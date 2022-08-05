@@ -149,13 +149,13 @@ def validate_paths(sample_paths: List[Path], source_table: Path) -> List[Path]:
     Returns:
         list: A list containing the paths, now validated.
     """
-    if all(sample_path.exists for sample_path in sample_paths) != True:
+    if all(sample_path.exists() for sample_path in sample_paths) != True:
         full_sample_paths: List[Path] = [
-            source_table.parent.joinpath(sample) for sample in sample_paths
+            source_table.parent.resolve().joinpath(sample) for sample in sample_paths
         ]
 
         if all(full_path.exists() for full_path in full_sample_paths) != True:
-            raise Exception("One or more provided sample paths doesn't exist")
+            raise Exception("One or more sample paths provided don't exist")
 
         return full_sample_paths
 
