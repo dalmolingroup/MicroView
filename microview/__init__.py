@@ -1,4 +1,4 @@
 name = "microview"
 __author__ = """João Vitor F. Cavalcante"""
 __email__ = "jvfe@ufrn.edu.br"
-__version__ = "0.5.4"
+__version__ = "0.6.0"

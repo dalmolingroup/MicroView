@@ -57,6 +57,6 @@ setup(
         "Documentation": "https://jvfe.github.io/microview/",
         "Source Code": "https://github.com/jvfe/microview",
     },
-    version="0.5.4",
+    version="0.6.0",
     zip_safe=False,
 )
