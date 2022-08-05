@@ -29,7 +29,14 @@ from microview.rendering import render_base
     type=click.Path(path_type=Path),
     help="2-column CSV table (sample,group) with taxonomy classification results paths",
 )
-def main(taxonomy: Path, csv_file: Path) -> None:
+@click.option(
+    "-o",
+    "--output",
+    default="microview_report.html",
+    help="Report file name",
+    type=click.Path(path_type=Path, writable=True, resolve_path=True),
+)
+def main(taxonomy: Path, csv_file: Path, output: Path) -> None:
     """
     MicroView, a reporting tool for taxonomic classification
 
@@ -68,7 +75,7 @@ def main(taxonomy: Path, csv_file: Path) -> None:
                 tax_plots = generate_taxo_plots(tax_results, parsed_result["dataframe"])
             else:
                 tax_plots = generate_taxo_plots(tax_results)
-            render_base(tax_plots, data_source)
+            render_base(tax_plots=tax_plots, dir_path=data_source, output_path=output)
         console.print(f"\n Done!\n", style="bold green")
     except Exception:
         console.print_exception(show_locals=True)

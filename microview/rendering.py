@@ -17,14 +17,15 @@ def embed_local_file(filename, filedir="templates"):
         return f.read()
 
 
-def render_base(tax_plots: Dict, dir_path: Path) -> None:
+def render_base(tax_plots: Dict, dir_path: Path, output_path: Path) -> None:
     """
     Render base template
 
     Args:
         tax_plots (dict): Dict containing results from
             microview.plotting.generate_taxo_plots
-        dir_path (Path): Path to directory containing report files
+        dir_path (Path): Path to directory containing report files]
+        output_path (Path): Path to output file
     """
     JINJA_ENV.globals["embed_local_file"] = embed_local_file
 
@@ -37,6 +38,12 @@ def render_base(tax_plots: Dict, dir_path: Path) -> None:
         dir_path=str(dir_path.resolve()),
         curr_time=curr_time,
     )
-    result_file = Path("microview_report.html").absolute()
-    with open(result_file, "w", encoding="utf-8") as f:
+
+    result_path = (
+        output_path
+        if output_path.suffix == ".html"
+        else output_path.with_suffix(".html")
+    )
+
+    with open(result_path, "w", encoding="utf-8") as f:
         f.write(rendered_template)
