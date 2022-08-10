@@ -24,7 +24,7 @@ test_requirements = [
 
 # Docs reqs
 
-extra_requirements = ["mkdocs", "mkdocstrings", "mkdocstrings.python"]
+extra_requirements = ["mkdocs", "mkdocstrings", "mkdocstrings.python", "click"]
 
 setup(
     author="João Vitor F. Cavalcante",

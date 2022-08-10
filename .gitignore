@@ -130,3 +130,7 @@ dmypy.json
 
 # todos
 todo.md
+
+# test results
+
+tests/test_data/*report.html
