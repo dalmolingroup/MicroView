@@ -1,0 +1,6 @@
+file	percent	reads	taxon_id	taxon_name
+sim_results/sample_v_1_kaiju.out	38.714001	19357	1647474	Viruses;Duplodnaviria;Heunggongvirae;Uroviricota;Caudoviricetes;Caudovirales;Siphoviridae;unclassified Siphoviridae;Gordonia phage GTE6;
+sim_results/sample_v_1_kaiju.out	15.544001	7772	12178	Viruses;Riboviria;Orthornavirae;Kitrinoviricota;Alsuviricetes;Tymovirales;Alphaflexiviridae;Potexvirus;Cymbidium mosaic virus;
+sim_results/sample_v_1_kaiju.out	9.642000	4821	642259	Viruses;unclassified viruses;unclassified DNA viruses;unclassified ssDNA viruses;Circovirus-like genome SAR-B;
+sim_results/sample_v_1_kaiju.out	9.132000	4566	2305465	Viruses;Riboviria;dsRNA viruses;unclassified dsRNA viruses;Ustilaginoidea virens nonsegmented virus 2;
+sim_results/sample_v_1_kaiju.out	5.012000	2506	1407057	Viruses;Alphasatellitidae;Geminialphasatellitinae;Colecusatellite;Tomato leaf curl Pakistan alphasatellite;Tomato leaf curl alphasatellite;

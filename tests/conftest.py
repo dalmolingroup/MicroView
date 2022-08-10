@@ -1,4 +1,5 @@
 from collections import Counter, defaultdict
+from pathlib import Path
 
 import pytest
 
@@ -33,3 +34,28 @@ def all_sample_counts():
     }
 
     return counts
+
+
+@pytest.fixture
+def get_kraken_data():
+    return Path(__file__).parent.resolve() / "test_data" / "kraken_test.tsv"
+
+
+@pytest.fixture
+def get_kaiju_data():
+    return Path(__file__).parent.resolve() / "test_data" / "kaiju_test.tsv"
+
+
+@pytest.fixture
+def get_centrifuge_data():
+    return Path(__file__).parent.resolve() / "test_data" / "centrifuge_test.tsv"
+
+
+@pytest.fixture
+def get_contrast_data():
+    return Path(__file__).parent.resolve() / "test_data" / "contrast_table.csv"
+
+
+@pytest.fixture
+def get_failing_contrast_data():
+    return Path(__file__).parent.resolve() / "test_data" / "contrast_table_failing.csv"
