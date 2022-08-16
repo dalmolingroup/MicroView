@@ -50,6 +50,8 @@ def plot_common_taxas(common_taxas_df, **kwargs):
             "value": "% of reads",
             "variable": "Taxon name",
         },
+        template="plotly_white",
+        color_discrete_sequence=px.colors.qualitative.Alphabet,
         **kwargs,
     )
 
@@ -64,6 +66,8 @@ def plot_abund_div(abund_div_df, **kwargs):
         y="Shannon Diversity",
         size="N Taxas",
         hover_data=["index"],
+        template="plotly_white",
+        color_discrete_sequence=px.colors.qualitative.Safe[3:],
         **kwargs,
     )
 
@@ -78,6 +82,7 @@ def plot_beta_pcoa(beta_pcoa, **kwargs):
         y="PC2",
         hover_data=["sample"],
         labels={"sample": "Sample name"},
+        template="plotly_white",
         **kwargs,
     )
     fig.update_traces(marker_size=10)
@@ -109,6 +114,7 @@ def generate_taxo_plots(tax_data: Dict, contrast_df=None) -> Dict:
             "index": "Sample name",
             "variable": "Category",
         },
+        template="plotly_white",
     )
 
     assigned.update_layout(
@@ -130,7 +136,13 @@ def generate_taxo_plots(tax_data: Dict, contrast_df=None) -> Dict:
         .rename(columns={"index": "PC"})
     )
 
-    pcoa_var = px.line(var_explained, x="PC", y="Variance Explained", text="PC")
+    pcoa_var = px.line(
+        var_explained,
+        x="PC",
+        y="Variance Explained",
+        text="PC",
+        template="plotly_white",
+    )
     pcoa_var.update_traces(textposition="bottom right")
 
     if contrast_df is not None and "group" in contrast_df.columns:
