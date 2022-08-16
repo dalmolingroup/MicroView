@@ -16,12 +16,15 @@ def export_to_html(fig: Figure, div_id: str) -> str:
     Returns:
         str: HTML string with plot
     """
+    config = {"modeBarButtonsToRemove": ["zoom", "select", "lasso2d"]}
+
     return io.to_html(
         fig,
         full_html=False,
         include_plotlyjs=False,
         include_mathjax=False,
         div_id=div_id,
+        config=config,
     )
 
 
