@@ -45,6 +45,11 @@ def plot_common_taxas(common_taxas_df, **kwargs):
         x="index",
         y="value",
         color="variable",
+        labels={
+            "index": "Sample name",
+            "value": "% of reads",
+            "variable": "Taxon name",
+        },
         **kwargs,
     )
 
@@ -67,7 +72,16 @@ def plot_beta_pcoa(beta_pcoa, **kwargs):
     """
     Generate scatter plot of two first coordinates of Beta Diversity PCoA
     """
-    return px.scatter(beta_pcoa, x="PC1", y="PC2", hover_data=["sample"], **kwargs)
+    fig = px.scatter(
+        beta_pcoa,
+        x="PC1",
+        y="PC2",
+        hover_data=["sample"],
+        labels={"sample": "Sample name"},
+        **kwargs,
+    )
+    fig.update_traces(marker_size=10)
+    return fig
 
 
 def generate_taxo_plots(tax_data: Dict, contrast_df=None) -> Dict:
@@ -86,7 +100,15 @@ def generate_taxo_plots(tax_data: Dict, contrast_df=None) -> Dict:
         dict: Dict containing all plots, one for each key.
     """
     assigned = px.bar(
-        tax_data["sample n reads"], x="index", y="value", color="variable"
+        tax_data["sample n reads"],
+        x="index",
+        y="value",
+        color="variable",
+        labels={
+            "value": "% of reads",
+            "index": "Sample name",
+            "variable": "Category",
+        },
     )
 
     assigned.update_layout(
@@ -103,12 +125,12 @@ def generate_taxo_plots(tax_data: Dict, contrast_df=None) -> Dict:
     var_explained = (
         tax_data["beta div"]
         .proportion_explained[:9]
-        .to_frame(name="variance explained")
+        .to_frame(name="Variance Explained")
         .reset_index()
         .rename(columns={"index": "PC"})
     )
 
-    pcoa_var = px.line(var_explained, x="PC", y="variance explained", text="PC")
+    pcoa_var = px.line(var_explained, x="PC", y="Variance Explained", text="PC")
     pcoa_var.update_traces(textposition="bottom right")
 
     if contrast_df is not None and "group" in contrast_df.columns:
