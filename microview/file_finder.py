@@ -1,3 +1,5 @@
+from dataclasses import dataclass
+from itertools import chain
 from pathlib import Path
 from typing import Dict, List, Tuple
 
@@ -5,6 +7,12 @@ from frictionless import checks, validate
 from pandas import read_csv
 
 from microview.schemas import contrast_table_schema, kaiju_report_schema
+
+
+@dataclass
+class Sample:
+    report: Path
+    report_type: str
 
 
 def get_validation_dict(table: Path, **kwargs) -> Dict:
@@ -72,7 +80,7 @@ def check_source_table_validation(report: Dict, console) -> None:
         raise Exception("Source table does not follow schema")
 
 
-def detect_report_type(report_paths: List[Path], console) -> Tuple[List[Path], str]:
+def detect_report_type(report_paths: List[Path], console) -> List[Sample]:
     """
     Detect report type from file paths
 
@@ -84,8 +92,8 @@ def detect_report_type(report_paths: List[Path], console) -> Tuple[List[Path], s
         console (rich.Console): Console to print messages to
 
     Returns:
-        tuple: First element the list of paths that pass the schema,
-            second element the report type in string form.
+        List[Sample]: List of samples, an object comprising two attributes,
+          one the report path, the other a string specifying the report type.
     """
     kaiju_validated = [
         get_validation_dict(report, schema=kaiju_report_schema)
@@ -96,31 +104,47 @@ def detect_report_type(report_paths: List[Path], console) -> Tuple[List[Path], s
         for kaiju_report in kaiju_validated
         if kaiju_report["errors"] == 0
     ]
-    if len(kaiju_reports) == 0:
 
-        # TODO: Improve Kraken validation
-        kraken_validated = [
-            get_validation_dict(report, checks=[checks.table_dimensions(num_fields=6)])
-            for report in report_paths
-        ]
-        kraken_reports = [
-            kraken_report["report"]
-            for kraken_report in kraken_validated
-            if is_kraken_report(kraken_report)
-        ]
+    # TODO: Improve Kraken validation
+    kraken_validated = [
+        get_validation_dict(report, checks=[checks.table_dimensions(num_fields=6)])
+        for report in report_paths
+    ]
+    kraken_reports = [
+        kraken_report["report"]
+        for kraken_report in kraken_validated
+        if is_kraken_report(kraken_report)
+    ]
 
-        if len(kraken_reports) == 0:
-            console.print("\n Could not find any valid reports", style="red")
-            raise Exception("Could not find any valid files.")
-        else:
-            report_type = "kraken"
-            return kraken_reports, report_type
+    if len(kraken_reports) == 0 and len(kaiju_reports) == 0:
+        console.print("\n Could not find any valid reports", style="red")
+        raise Exception("Could not find any valid files.")
     else:
-        report_type = "kaiju"
-        return kaiju_reports, report_type
+
+        kraken_not_in_kaiju = list(
+            filter(lambda report: report not in kaiju_reports, kraken_reports)
+        )
+
+        # TODO: Improve how this looks
+        all_reports = list(
+            chain(
+                *[
+                    [
+                        Sample(report=report, report_type="kaiju")
+                        for report in kaiju_reports
+                    ],
+                    [
+                        Sample(report=report, report_type="kraken")
+                        for report in kraken_not_in_kaiju
+                    ],
+                ]
+            )
+        )
+
+        return all_reports
 
 
-def find_reports(reports_path: Path, console) -> Tuple[List[Path], str]:
+def find_reports(reports_path: Path, console) -> List[Sample]:
     """
     Find reports in given path
 
@@ -129,13 +153,12 @@ def find_reports(reports_path: Path, console) -> Tuple[List[Path], str]:
         console (rich.Console): Console to print messages to
 
     Returns:
-        tuple: First element the list of report_paths validated against
-            schemas or checks and second element the type detected from
-            said paths.
+        List[Sample]: List of samples, an object comprising two attributes,
+          one the report path, the other a string specifying the report type.
     """
     file_paths: List[Path] = list(reports_path.glob("*tsv"))
-    report_paths, report_type = detect_report_type(file_paths, console)
-    return report_paths, report_type
+    samples = detect_report_type(file_paths, console)
+    return samples
 
 
 def validate_paths(sample_paths: List[Path], source_table: Path) -> List[Path]:
@@ -176,9 +199,8 @@ def parse_source_table(source_table: Path, console) -> Dict:
         console (rich.Console): Console to print messages to, utilized by subfunctions.
 
     Returns:
-        dict: Dict with 'paths', containing the report paths; 'report_type',
-            with the detected report type; and 'dataframe' with the source
-            table itself.
+        dict: Dict with 'samples', containing the samples and report types;
+            and 'dataframe' with the source table itself.
     """
     report = get_validation_dict(source_table, schema=contrast_table_schema)
 
@@ -190,10 +212,9 @@ def parse_source_table(source_table: Path, console) -> Dict:
 
     validated_paths = validate_paths(sample_paths, source_table)
 
-    report_paths, report_type = detect_report_type(validated_paths, console)
+    samples = detect_report_type(validated_paths, console)
 
     return {
-        "paths": report_paths,
-        "report_type": report_type,
+        "samples": samples,
         "dataframe": df,
     }

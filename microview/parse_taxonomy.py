@@ -1,5 +1,4 @@
 from collections import Counter, defaultdict
-from pathlib import Path
 from typing import Counter, Dict, List, Tuple
 
 import pandas as pd
@@ -7,14 +6,16 @@ from numpy import NaN, count_nonzero, log
 from skbio.diversity import alpha_diversity, beta_diversity
 from skbio.stats.ordination import pcoa
 
+from microview.file_finder import Sample
 
-def parse_reports(files: List[Path], report_type: str) -> dict:
+
+def parse_reports(samples: List[Sample]) -> dict:
     """
     Parse taxonomy results
 
     Args:
-        files (list): List of file paths to read reports from
-        report_type (str): String denoting report type, kaiju or kraken
+        samples (List[Sample]): List of samples, an object comprising two attributes,
+          one the report path, the other a string specifying the report type.
 
     Returns:
         dict: Dict of each sample as key and every value differentiating
@@ -24,16 +25,16 @@ def parse_reports(files: List[Path], report_type: str) -> dict:
     """
     parsed_stats: Dict[str, dict] = {}
 
-    for sample in files:
-        df = pd.read_table(sample).replace({"None": NaN}, regex=True)
+    for sample in samples:
+        df = pd.read_table(sample.report).replace({"None": NaN}, regex=True)
 
-        sample_name = sample.name
+        sample_name = sample.report.name
         parsed_stats[sample_name] = defaultdict(lambda: {"n_reads": 0, "percent": 0})
         parsed_stats[sample_name].update({"assigned": {}})
 
-        if report_type == "kaiju":
+        if sample.report_type == "kaiju":
             parse_kaiju2table(sample_name, df, parsed_stats)
-        elif report_type == "kraken":
+        elif sample.report_type == "kraken":
             parse_kraken_report(sample_name, df, parsed_stats)
 
     return parsed_stats
@@ -199,7 +200,7 @@ def calculate_abund_diver(sample_counts: Dict) -> Tuple[pd.DataFrame]:
     return div_abund_df, betadiv_pcoa
 
 
-def get_tax_data(paths: List[Path], report_type: str) -> Dict:
+def get_tax_data(samples: List[Sample]) -> Dict:
     """
     Master function for generating stats from taxonomic classification results
 
@@ -208,8 +209,8 @@ def get_tax_data(paths: List[Path], report_type: str) -> Dict:
     abundance metrics.
 
     Args:
-        paths (list): List of paths of where to read the reports from
-        report_type (str): Detected report type, kaiju or kraken.
+        samples (List[Sample]): List of samples, an object comprising two attributes,
+          one the report path, the other a string specifying the report type.
 
     Returns:
         dict: Dict with 4 keys: 'sample n reads' containing read assignment stats;
@@ -218,7 +219,7 @@ def get_tax_data(paths: List[Path], report_type: str) -> Dict:
             metrics; and 'beta div' containing a PCoA of beta diversity results.
     """
 
-    parsed_stats = parse_reports(paths, report_type)
+    parsed_stats = parse_reports(samples)
 
     all_sample_counts = get_taxon_counts(parsed_stats)
 

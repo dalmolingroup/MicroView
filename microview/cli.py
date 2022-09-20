@@ -58,18 +58,15 @@ def main(taxonomy: Path, csv_file: Path, output: Path) -> None:
     with console.status("[bold]Reading report...[/]"):
         if csv_file is not None:
             parsed_result = parse_source_table(data_source, console)
-            reports = parsed_result["paths"]
-            report_type = parsed_result["report_type"]
+            reports = parsed_result["samples"]
         else:
-            reports, report_type = find_reports(data_source, console)
+            reports = find_reports(data_source, console)
             parsed_result = None
 
     try:
-        console.print(
-            f"\n Found [bold]{len(reports)}[/] {report_type.title()} reports... \n"
-        )
+        console.print(f"\n Found [bold]{len(reports)}[/] reports... \n")
         with console.status("[bold]Calculating metrics...[/]"):
-            tax_results = get_tax_data(reports, report_type)
+            tax_results = get_tax_data(reports)
             # TODO: Improve this double check
             if parsed_result is not None:
                 tax_plots = generate_taxo_plots(tax_results, parsed_result["dataframe"])
