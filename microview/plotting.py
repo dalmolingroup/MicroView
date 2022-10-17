@@ -1,7 +1,7 @@
 from typing import Dict, Optional
 
-import plotly.express as px
 from plotly import io
+from plotly.express import bar, colors, line, scatter
 from plotly.graph_objects import Figure
 
 
@@ -43,7 +43,7 @@ def plot_common_taxas(common_taxas_df, **kwargs):
     """
     Generate bar plot with most common taxas
     """
-    return px.bar(
+    return bar(
         common_taxas_df.sort_values(by=["value", "variable"], ascending=[False, True]),
         x="index",
         y="value",
@@ -54,7 +54,7 @@ def plot_common_taxas(common_taxas_df, **kwargs):
             "variable": "Taxon name",
         },
         template="plotly_white",
-        color_discrete_sequence=px.colors.qualitative.Alphabet,
+        color_discrete_sequence=colors.qualitative.Alphabet,
         **kwargs,
     )
 
@@ -63,14 +63,14 @@ def plot_abund_div(abund_div_df, **kwargs):
     """
     Generate scatter plot of Pielou's Evenness and Shannon's Diversity (alpha)
     """
-    return px.scatter(
+    return scatter(
         abund_div_df,
         x="Pielou Evenness",
         y="Shannon Diversity",
         size="N Taxas",
         hover_data=["index"],
         template="plotly_white",
-        color_discrete_sequence=px.colors.qualitative.Safe[3:],
+        color_discrete_sequence=colors.qualitative.Safe[3:],
         **kwargs,
     )
 
@@ -79,7 +79,7 @@ def plot_beta_pcoa(beta_pcoa, **kwargs):
     """
     Generate scatter plot of two first coordinates of Beta Diversity PCoA
     """
-    fig = px.scatter(
+    fig = scatter(
         beta_pcoa,
         x="PC1",
         y="PC2",
@@ -107,7 +107,7 @@ def generate_taxo_plots(tax_data: Dict, contrast_df=None) -> Dict:
     Returns:
         dict: Dict containing all plots, one for each key.
     """
-    assigned = px.bar(
+    assigned = bar(
         tax_data["sample n reads"],
         x="index",
         y="value",
@@ -139,7 +139,7 @@ def generate_taxo_plots(tax_data: Dict, contrast_df=None) -> Dict:
         .rename(columns={"index": "PC"})
     )
 
-    pcoa_var = px.line(
+    pcoa_var = line(
         var_explained,
         x="PC",
         y="Variance Explained",

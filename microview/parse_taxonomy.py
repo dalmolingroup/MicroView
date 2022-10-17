@@ -1,8 +1,8 @@
 from collections import Counter, defaultdict
 from typing import Counter, Dict, List, Tuple
 
-import pandas as pd
 from numpy import NaN, count_nonzero, log
+from pandas import DataFrame, read_table
 from skbio.diversity import alpha_diversity, beta_diversity
 from skbio.stats.ordination import pcoa
 
@@ -26,7 +26,7 @@ def parse_reports(samples: List[Sample]) -> dict:
     parsed_stats: Dict[str, dict] = {}
 
     for sample in samples:
-        df = pd.read_table(sample.report).replace({"None": NaN}, regex=True)
+        df = read_table(sample.report).replace({"None": NaN}, regex=True)
 
         sample_name = sample.report.name
         parsed_stats[sample_name] = defaultdict(lambda: {"n_reads": 0, "percent": 0})
@@ -160,7 +160,7 @@ def get_common_taxas(sample_counts: Dict) -> Dict:
     return most_common
 
 
-def calculate_abund_diver(sample_counts: Dict) -> Tuple[pd.DataFrame]:
+def calculate_abund_diver(sample_counts: Dict) -> Tuple[DataFrame]:
     """
     Calculate alpha diversity, beta diversity and pielou evenness in samples
 
@@ -173,14 +173,12 @@ def calculate_abund_diver(sample_counts: Dict) -> Tuple[pd.DataFrame]:
             number of taxas, alpha diversity and Pielou's evenness;
             Second one containing a PCoA of the beta diversity result.
     """
-    taxa_counts_df = pd.DataFrame(sample_counts).T.fillna(0)
+    taxa_counts_df = DataFrame(sample_counts).T.fillna(0)
     ids = taxa_counts_df.index
 
     shannon_div = alpha_diversity("shannon", taxa_counts_df.to_numpy(), ids)
 
-    div_abund_df = pd.DataFrame(
-        shannon_div, columns=["Shannon Diversity"]
-    ).reset_index()
+    div_abund_df = DataFrame(shannon_div, columns=["Shannon Diversity"]).reset_index()
 
     div_abund_df["N Taxas"] = count_nonzero(taxa_counts_df.to_numpy(), axis=1)
 
@@ -229,10 +227,10 @@ def get_tax_data(samples: List[Sample]) -> Dict:
 
     abund_div_df, betadiv_pcoa = calculate_abund_diver(all_sample_counts)
 
-    stats_df = pd.DataFrame(n_reads).T.reset_index().melt(id_vars=["index"])
+    stats_df = DataFrame(n_reads).T.reset_index().melt(id_vars=["index"])
 
     most_common_df = (
-        pd.DataFrame.from_dict(most_common, orient="index")
+        DataFrame.from_dict(most_common, orient="index")
         .reset_index()
         .melt(id_vars=["index"])
         .sort_values(["index", "variable"], ascending=False)
