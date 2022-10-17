@@ -12,6 +12,7 @@ from microview.rendering import render_base
 
 
 @click.command(context_settings=dict(help_option_names=["-h", "--help"]))
+@click.version_option(prog_name="MicroView")
 @optgroup.group(
     "Input data source",
     cls=RequiredMutuallyExclusiveOptionGroup,
