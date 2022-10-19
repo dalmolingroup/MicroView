@@ -14,7 +14,7 @@ install_requirements = [
     "jinja2",
     "rich",
     "rich-click",
-    "click_option_group",
+    "click-option-group",
     "frictionless",
 ]
 
