@@ -1,6 +1,6 @@
 # MicroView
 
-<!-- badges: start -->/
+<!-- badges: start -->
 [![license](https://img.shields.io/badge/license-BSD%203--Clause-green)](https://github.com/dalmolingroup/microview/blob/master/LICENSE)
 [![pytest status](https://github.com/dalmolingroup/microview/workflows/test-and-lint/badge.svg)](https://github.com/dalmolingroup/microview/actions)
 [![documentation status](https://github.com/dalmolingroup/microview/workflows/docs/badge.svg)](https://dalmolingroup.github.io/MicroView/)
