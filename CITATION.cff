@@ -8,5 +8,5 @@ authors:
     given-names: "Rodrigo Juliani"
     orcid: https://orcid.org/0000-0002-1688-6155
 title: "MicroView"
-version: 0.9.2
+version: 0.9.3
 url: "https://github.com/jvfe/microview"
