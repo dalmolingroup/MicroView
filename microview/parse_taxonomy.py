@@ -26,7 +26,8 @@ def parse_reports(samples: List[Sample]) -> dict:
     parsed_stats: Dict[str, dict] = {}
 
     for sample in samples:
-        df = read_table(sample.report).replace({"None": NaN}, regex=True)
+        header = None if sample.report_type == "kraken" else 0
+        df = read_table(sample.report, header=header).replace({"None": NaN}, regex=True)
 
         sample_name = sample.report.name
         parsed_stats[sample_name] = defaultdict(lambda: {"n_reads": 0, "percent": 0})
