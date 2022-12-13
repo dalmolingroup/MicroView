@@ -129,27 +129,33 @@ def generate_taxo_plots(tax_data: Dict, contrast_df=None) -> Dict:
     assigned_html = export_to_html(assigned, "assigned-plot")
 
     # Beta diversity plots
+    plot_beta_div = False if tax_data["beta div"] is None else True
 
-    pcoa_embed = (
-        tax_data["beta div"].samples[["PC1", "PC2"]].rename_axis("sample").reset_index()
-    )
-    var_explained = (
-        tax_data["beta div"]
-        .proportion_explained[:9]
-        .to_frame(name="Variance Explained")
-        .reset_index()
-        .rename(columns={"index": "PC"})
-    )
+    if plot_beta_div:
+        pcoa_embed = (
+            tax_data["beta div"]
+            .samples[["PC1", "PC2"]]
+            .rename_axis("sample")
+            .reset_index()
+        )
+        var_explained = (
+            tax_data["beta div"]
+            .proportion_explained[:9]
+            .to_frame(name="Variance Explained")
+            .reset_index()
+            .rename(columns={"index": "PC"})
+        )
 
-    pcoa_var = line(
-        var_explained,
-        x="PC",
-        y="Variance Explained",
-        text="PC",
-        template="plotly_white",
-    )
-    pcoa_var.update_traces(textposition="bottom right")
+        pcoa_var = line(
+            var_explained,
+            x="PC",
+            y="Variance Explained",
+            text="PC",
+            template="plotly_white",
+        )
+        pcoa_var.update_traces(textposition="bottom right")
 
+    # TODO: Improve this check
     if contrast_df is not None and "group" in contrast_df.columns:
         merged_taxas_df = merge_with_contrasts(tax_data["common taxas"], contrast_df)
 
@@ -160,36 +166,34 @@ def generate_taxo_plots(tax_data: Dict, contrast_df=None) -> Dict:
             merge_with_contrasts(tax_data["abund and div"], contrast_df),
             color="group",
         )
-
-        betadiv_pcoa = plot_beta_pcoa(
-            merge_with_contrasts(pcoa_embed, contrast_df, left_colname="sample"),
-            color="group",
-        )
+        if plot_beta_div:
+            betadiv_pcoa = plot_beta_pcoa(
+                merge_with_contrasts(pcoa_embed, contrast_df, left_colname="sample"),
+                color="group",
+            )
 
     else:
         common_taxas = plot_common_taxas(tax_data["common taxas"])
 
         abund_div = plot_abund_div(tax_data["abund and div"])
-
-        betadiv_pcoa = plot_beta_pcoa(pcoa_embed)
+        if plot_beta_div:
+            betadiv_pcoa = plot_beta_pcoa(pcoa_embed)
 
     common_taxas.update_traces(showlegend=False)
     common_taxas.update_layout(
         xaxis={"categoryorder": "category ascending"},
     )
 
-    common_taxas_html = export_to_html(common_taxas, "taxas-plot")
-
-    abund_div_html = export_to_html(abund_div, "abund-div-plot")
-
-    pcoa_var_html = export_to_html(pcoa_var, "pcoa-explained-variance")
-
-    betadiv_pcoa_html = export_to_html(betadiv_pcoa, "betadiv_pcoa")
-
-    return {
+    return_dict = {
         "assigned_plot": assigned_html,
-        "common_taxas_plot": common_taxas_html,
-        "abund_div_plot": abund_div_html,
-        "pcoa_var_plot": pcoa_var_html,
-        "beta_div_pcoa": betadiv_pcoa_html,
+        "common_taxas_plot": export_to_html(common_taxas, "taxas-plot"),
+        "abund_div_plot": export_to_html(abund_div, "abund-div-plot"),
     }
+
+    if plot_beta_div:
+        return_dict["pcoa_var_plot"] = export_to_html(
+            pcoa_var, "pcoa-explained-variance"
+        )
+        return_dict["beta_div_pcoa"] = export_to_html(betadiv_pcoa, "betadiv_pcoa")
+
+    return return_dict

@@ -189,14 +189,20 @@ def calculate_abund_diver(sample_counts: Dict) -> Tuple[DataFrame]:
     )
 
     # Beta diversity analysis
+    if len(ids) > 1:
+        # Don't calculate beta div when there is only one sample
+        beta_div = beta_diversity(
+            metric="braycurtis",
+            counts=taxa_counts_df.to_numpy(),
+            ids=ids,
+            validate=True,
+        )
 
-    beta_div = beta_diversity(
-        metric="braycurtis", counts=taxa_counts_df.to_numpy(), ids=ids, validate=True
-    )
+        betadiv_pcoa = pcoa(beta_div)
 
-    betadiv_pcoa = pcoa(beta_div)
-
-    return div_abund_df, betadiv_pcoa
+        return div_abund_df, betadiv_pcoa
+    else:
+        return div_abund_df, None
 
 
 def get_tax_data(samples: List[Sample]) -> Dict:
