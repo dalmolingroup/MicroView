@@ -1,9 +1,11 @@
 # MicroView
 
 <!-- badges: start -->
+
 [![license](https://img.shields.io/badge/license-BSD%203--Clause-green)](https://github.com/dalmolingroup/microview/blob/master/LICENSE)
 [![pytest status](https://github.com/dalmolingroup/microview/workflows/test-and-lint/badge.svg)](https://github.com/dalmolingroup/microview/actions)
-[![documentation status](https://github.com/dalmolingroup/microview/workflows/docs/badge.svg)](https://dalmolingroup.github.io/MicroView/)
+[![Documentation Status](https://readthedocs.org/projects/microview-bio/badge/?version=latest)](https://microview-bio.readthedocs.io/en/latest/?badge=latest)
+
 <!-- badges: end -->
 
 MicroView, a reporting tool for taxonomic classification
@@ -12,7 +14,7 @@ MicroView agreggates results from taxonomic classification tools,
 such as Kaiju and Kraken, building an interactive HTML report with
 insightful visualizations.
 
-Checkout the [full documentation](https://dalmolingroup.github.io/MicroView/).
+Checkout the [full documentation](https://microview-bio.readthedocs.io/en/latest/?badge=latest).
 
 ## Quickstart
 
