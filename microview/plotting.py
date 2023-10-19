@@ -1,5 +1,6 @@
-from typing import Dict, Optional
 from pathlib import Path
+from typing import Dict, Optional
+
 from plotly import io
 from plotly.express import bar, colors, line, scatter
 from plotly.graph_objects import Figure
@@ -156,7 +157,9 @@ def generate_taxo_plots(tax_data: Dict, contrast_df=None) -> Dict:
 
     # TODO: Improve this check
     if contrast_df is not None and "group" in contrast_df.columns:
-        contrast_df['sample'] = [str(Path(s).name) for s in contrast_df['sample'].to_list()]
+        contrast_df["sample"] = [
+            str(Path(s).name) for s in contrast_df["sample"].to_list()
+        ]
         merged_taxas_df = merge_with_contrasts(tax_data["common taxas"], contrast_df)
 
         common_taxas = plot_common_taxas(merged_taxas_df, facet_col="group")

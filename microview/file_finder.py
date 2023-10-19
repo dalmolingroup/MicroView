@@ -120,7 +120,6 @@ def detect_report_type(report_paths: List[Path], console) -> List[Sample]:
         console.print("\n Could not find any valid reports", style="red")
         raise Exception("Could not find any valid files.")
     else:
-
         kraken_not_in_kaiju = list(
             filter(lambda report: report not in kaiju_reports, kraken_reports)
         )
