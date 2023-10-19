@@ -36,13 +36,13 @@ extra_requirements = [
 setup(
     author="João Vitor F. Cavalcante",
     author_email="jvfe@ufrn.edu.br",
-    python_requires=">=3.7",
+    python_requires=">=3.8",
     classifiers=[
         "Development Status :: 3 - Alpha",
         "Intended Audience :: Science/Research",
         "Topic :: Scientific/Engineering :: Bio-Informatics",
         "License :: OSI Approved :: BSD License",
-        "Programming Language :: Python :: 3.7",
+        "Programming Language :: Python :: 3.8",
         "Natural Language :: English",
     ],
     description="Generate reports from metagenomics data",
