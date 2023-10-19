@@ -46,7 +46,6 @@ def parse_kaiju2table(sample_name: str, df, parsed_stats: Dict) -> None:
     Parses kaiju report
     """
     for row in df.itertuples():
-
         row_dict = {"n_reads": row.reads, "percent": row.percent}
         if row.taxon_name == "unclassified":
             parsed_stats[sample_name].update({"unclassified": row_dict})

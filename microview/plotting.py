@@ -1,3 +1,4 @@
+from pathlib import Path
 from typing import Dict, Optional
 
 from plotly import io
@@ -52,7 +53,6 @@ def plot_common_taxas(common_taxas_df, **kwargs):
             "index": "Sample name",
             "value": "% of reads",
             "variable": "Taxon name",
-            "group": "Group",
         },
         template="plotly_white",
         color_discrete_sequence=colors.qualitative.Alphabet,
@@ -70,7 +70,7 @@ def plot_abund_div(abund_div_df, **kwargs):
         y="Shannon Diversity",
         size="N Taxas",
         hover_data=["index"],
-        labels={"group": "Group", "N Taxas": "# taxas"},
+        labels={"N Taxas": "# taxas"},
         template="plotly_white",
         color_discrete_sequence=colors.qualitative.Safe[3:],
         **kwargs,
@@ -86,7 +86,7 @@ def plot_beta_pcoa(beta_pcoa, **kwargs):
         x="PC1",
         y="PC2",
         hover_data=["sample"],
-        labels={"sample": "Sample name", "group": "Group"},
+        labels={"sample": "Sample name"},
         template="plotly_white",
         **kwargs,
     )
@@ -157,6 +157,9 @@ def generate_taxo_plots(tax_data: Dict, contrast_df=None) -> Dict:
 
     # TODO: Improve this check
     if contrast_df is not None and "group" in contrast_df.columns:
+        contrast_df["sample"] = [
+            str(Path(s).name) for s in contrast_df["sample"].to_list()
+        ]
         merged_taxas_df = merge_with_contrasts(tax_data["common taxas"], contrast_df)
 
         common_taxas = plot_common_taxas(merged_taxas_df, facet_col="group")

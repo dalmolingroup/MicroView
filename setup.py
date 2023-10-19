@@ -6,7 +6,7 @@ with open("README.md", "r") as readme_file:
     readme = readme_file.read()
 
 install_requirements = [
-    "scipy<=1.8",
+    "scipy",
     "scikit-bio",
     "pandas",
     "numpy",
@@ -15,7 +15,7 @@ install_requirements = [
     "rich",
     "rich-click",
     "click-option-group",
-    "frictionless",
+    "frictionless==4.32.0",
 ]
 
 test_requirements = [
@@ -36,13 +36,13 @@ extra_requirements = [
 setup(
     author="João Vitor F. Cavalcante",
     author_email="jvfe@ufrn.edu.br",
-    python_requires=">=3.7",
+    python_requires=">=3.8",
     classifiers=[
         "Development Status :: 3 - Alpha",
         "Intended Audience :: Science/Research",
         "Topic :: Scientific/Engineering :: Bio-Informatics",
         "License :: OSI Approved :: BSD License",
-        "Programming Language :: Python :: 3.7",
+        "Programming Language :: Python :: 3.8",
         "Natural Language :: English",
     ],
     description="Generate reports from metagenomics data",
@@ -64,6 +64,6 @@ setup(
         "Documentation": "https://jvfe.github.io/microview/",
         "Source Code": "https://github.com/jvfe/microview",
     },
-    version="0.9.5",
+    version="0.9.6",
     zip_safe=False,
 )
