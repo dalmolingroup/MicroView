@@ -6,7 +6,7 @@ with open("README.md", "r") as readme_file:
     readme = readme_file.read()
 
 install_requirements = [
-    "scipy<=1.8",
+    "scipy",
     "scikit-bio",
     "pandas",
     "numpy",
@@ -15,7 +15,7 @@ install_requirements = [
     "rich",
     "rich-click",
     "click-option-group",
-    "frictionless",
+    "frictionless==4.32.0",
 ]
 
 test_requirements = [
