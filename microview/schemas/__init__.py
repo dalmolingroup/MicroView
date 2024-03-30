@@ -1,6 +1,7 @@
 """
 MicroView module containing schemas for data validation
 """
+
 from pathlib import Path
 
 HERE = Path(__file__).parent.resolve()
