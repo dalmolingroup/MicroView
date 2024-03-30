@@ -155,7 +155,7 @@ def find_reports(reports_path: Path, console) -> List[Sample]:
         List[Sample]: List of samples, an object comprising two attributes,
           one the report path, the other a string specifying the report type.
     """
-    file_paths: List[Path] = list(reports_path.glob("*tsv"))
+    file_paths: List[Path] = list(reports_path.glob("*txt"))
     samples = detect_report_type(file_paths, console)
     return samples
 
