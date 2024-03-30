@@ -107,7 +107,9 @@ def detect_report_type(report_paths: List[Path], console) -> List[Sample]:
 
     # TODO: Improve Kraken validation
     kraken_validated = [
-        get_validation_dict(report, format="tsv", checks=[checks.table_dimensions(num_fields=6)])
+        get_validation_dict(
+            report, format="tsv", checks=[checks.table_dimensions(num_fields=6)]
+        )
         for report in report_paths
     ]
     kraken_reports = [
