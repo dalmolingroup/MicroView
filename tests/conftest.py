@@ -38,17 +38,17 @@ def all_sample_counts():
 
 @pytest.fixture
 def get_kraken_data():
-    return Path(__file__).parent.resolve() / "test_data" / "kraken_test.tsv"
+    return Path(__file__).parent.resolve() / "test_data" / "kraken_test.txt"
 
 
 @pytest.fixture
 def get_kaiju_data():
-    return Path(__file__).parent.resolve() / "test_data" / "kaiju_test.tsv"
+    return Path(__file__).parent.resolve() / "test_data" / "kaiju_test.txt"
 
 
 @pytest.fixture
 def get_centrifuge_data():
-    return Path(__file__).parent.resolve() / "test_data" / "centrifuge_test.tsv"
+    return Path(__file__).parent.resolve() / "test_data" / "centrifuge_test.txt"
 
 
 @pytest.fixture

@@ -28,14 +28,12 @@ def test_detect_centrifuge(get_centrifuge_data):
 
 
 def test_validate_source_table(get_contrast_data):
-
     validated = get_validation_dict(get_contrast_data, schema=contrast_table_schema)
 
     assert validated["errors"] == 0
 
 
 def test_invalidate_source_table(get_failing_contrast_data):
-
     validated = get_validation_dict(
         get_failing_contrast_data, schema=contrast_table_schema
     )

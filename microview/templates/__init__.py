@@ -1,6 +1,7 @@
 """
 MicroView module containing Jinja2 templates
 """
+
 from pathlib import Path
 
 from jinja2 import Environment, FileSystemLoader
