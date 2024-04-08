@@ -15,7 +15,7 @@ install_requirements = [
     "rich",
     "rich-click",
     "click-option-group",
-    "frictionless==4.32.0",
+    "frictionless>=4.32.0, <5",
 ]
 
 test_requirements = [
