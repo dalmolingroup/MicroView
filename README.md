@@ -55,3 +55,9 @@ Then, an HTML file named `microview_report.html` -
 or the name you defined with the `-o` param -
 should be available in your working directory,
 try opening it with your browser!
+
+## Example report
+
+Here's what the beginning of a MicroView report looks like (sensitive information obscured):
+
+![MicroView header](https://i.imgur.com/YNRH9yK.png)
