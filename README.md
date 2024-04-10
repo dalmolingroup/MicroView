@@ -24,6 +24,12 @@ Install the package:
 pip install microview
 ```
 
+Alternatively, you can also install it with Conda:
+
+```sh
+conda install bioconda:microview
+```
+
 Go to your directory containing Kaiju/Kraken-style results and run:
 
 ```sh
