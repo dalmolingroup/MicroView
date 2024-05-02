@@ -28,6 +28,15 @@ def export_to_html(fig: Figure, div_id: str) -> str:
         config=config,
     )
 
+def write_table(df, output_path, path):
+    """
+    Write a dataframe to a file
+    """
+    dirpath = Path(output_path).parent.resolve() / Path("microview_tables")
+    Path(dirpath).mkdir(exist_ok=True)
+    path = dirpath / path
+
+    df.to_csv(path, sep="\t", index=False)
 
 def merge_with_contrasts(df, contrast_df, left_colname: Optional[str] = "index"):
     """
@@ -40,10 +49,12 @@ def merge_with_contrasts(df, contrast_df, left_colname: Optional[str] = "index")
     return merged_df
 
 
-def plot_common_taxas(common_taxas_df, **kwargs):
+def plot_common_taxas(common_taxas_df, output_path, **kwargs):
     """
     Generate bar plot with most common taxas
     """
+    write_table(common_taxas_df, output_path, "common_taxas.tsv")
+
     return bar(
         common_taxas_df.sort_values(by=["value", "variable"], ascending=[False, True]),
         x="index",
@@ -60,10 +71,12 @@ def plot_common_taxas(common_taxas_df, **kwargs):
     )
 
 
-def plot_abund_div(abund_div_df, **kwargs):
+def plot_abund_div(abund_div_df, output_path, **kwargs):
     """
     Generate scatter plot of Pielou's Evenness and Shannon's Diversity (alpha)
     """
+    write_table(abund_div_df, output_path, "abund_diversity.tsv")
+
     return scatter(
         abund_div_df,
         x="Pielou Evenness",
@@ -77,10 +90,12 @@ def plot_abund_div(abund_div_df, **kwargs):
     )
 
 
-def plot_beta_pcoa(beta_pcoa, **kwargs):
+def plot_beta_pcoa(beta_pcoa, output_path, **kwargs):
     """
     Generate scatter plot of two first coordinates of Beta Diversity PCoA
     """
+    write_table(beta_pcoa, output_path, "beta_pcoa.tsv")
+
     fig = scatter(
         beta_pcoa,
         x="PC1",
@@ -94,7 +109,7 @@ def plot_beta_pcoa(beta_pcoa, **kwargs):
     return fig
 
 
-def generate_taxo_plots(tax_data: Dict, contrast_df=None) -> Dict:
+def generate_taxo_plots(tax_data: Dict, contrast_df=None, output_path=None) -> Dict:
     """
     Get all taxonomy plots
 
@@ -121,6 +136,7 @@ def generate_taxo_plots(tax_data: Dict, contrast_df=None) -> Dict:
         },
         template="plotly_white",
     )
+    write_table(tax_data["sample n reads"], output_path, "classified_reads.tsv")
 
     assigned.update_layout(
         xaxis={"categoryorder": "category ascending"},
@@ -146,6 +162,8 @@ def generate_taxo_plots(tax_data: Dict, contrast_df=None) -> Dict:
             .rename(columns={"index": "PC"})
         )
 
+        write_table(var_explained, output_path, "pcoa_variance_explained.tsv")
+
         pcoa_var = line(
             var_explained,
             x="PC",
@@ -162,25 +180,27 @@ def generate_taxo_plots(tax_data: Dict, contrast_df=None) -> Dict:
         ]
         merged_taxas_df = merge_with_contrasts(tax_data["common taxas"], contrast_df)
 
-        common_taxas = plot_common_taxas(merged_taxas_df, facet_col="group")
+        common_taxas = plot_common_taxas(merged_taxas_df,output_path, facet_col="group")
         common_taxas.update_xaxes(matches=None)
 
         abund_div = plot_abund_div(
             merge_with_contrasts(tax_data["abund and div"], contrast_df),
+            output_path,
             color="group",
         )
         if plot_beta_div:
             betadiv_pcoa = plot_beta_pcoa(
                 merge_with_contrasts(pcoa_embed, contrast_df, left_colname="sample"),
+                output_path,
                 color="group",
             )
 
     else:
-        common_taxas = plot_common_taxas(tax_data["common taxas"])
+        common_taxas = plot_common_taxas(tax_data["common taxas"], output_path)
 
-        abund_div = plot_abund_div(tax_data["abund and div"])
+        abund_div = plot_abund_div(tax_data["abund and div"], output_path)
         if plot_beta_div:
-            betadiv_pcoa = plot_beta_pcoa(pcoa_embed)
+            betadiv_pcoa = plot_beta_pcoa(pcoa_embed, output_path)
 
     common_taxas.update_traces(showlegend=False)
     common_taxas.update_layout(

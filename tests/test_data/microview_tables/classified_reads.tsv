@@ -1,0 +1,9 @@
+index	variable	value
+kaiju_test_2.txt	assigned	100.0
+kaiju_test.txt	assigned	100.0
+centrifuge_test.txt	assigned	0.2763703362505758
+kraken_test.txt	assigned	100.0
+kaiju_test_2.txt	unassigned	0.0
+kaiju_test.txt	unassigned	0.0
+centrifuge_test.txt	unassigned	99.72362966374942
+kraken_test.txt	unassigned	0.0
