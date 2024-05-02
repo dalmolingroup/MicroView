@@ -1,0 +1,37 @@
+index	variable	value
+kraken_test.txt	unclassified	
+kraken_test.txt	root	
+kraken_test.txt	other	21.488
+kraken_test.txt	Ustilaginoidea virens nonsegmented virus 2	9.13
+kraken_test.txt	Tomato leaf curl alphasatellite	5.64
+kraken_test.txt	Siphoviridae	
+kraken_test.txt	Gordonia phage GTE6	38.56
+kraken_test.txt	Cymbidium mosaic virus	15.54
+kraken_test.txt	Circovirus-like genome SAR-B	9.64
+kaiju_test_2.txt	unclassified	
+kaiju_test_2.txt	root	
+kaiju_test_2.txt	other	0.0
+kaiju_test_2.txt	Ustilaginoidea virens nonsegmented virus 2	11.7
+kaiju_test_2.txt	Tomato leaf curl alphasatellite	6.42
+kaiju_test_2.txt	Siphoviridae	
+kaiju_test_2.txt	Gordonia phage GTE6	49.61
+kaiju_test_2.txt	Cymbidium mosaic virus	19.92
+kaiju_test_2.txt	Circovirus-like genome SAR-B	12.35
+kaiju_test.txt	unclassified	
+kaiju_test.txt	root	
+kaiju_test.txt	other	0.0
+kaiju_test.txt	Ustilaginoidea virens nonsegmented virus 2	11.7
+kaiju_test.txt	Tomato leaf curl alphasatellite	6.42
+kaiju_test.txt	Siphoviridae	
+kaiju_test.txt	Gordonia phage GTE6	49.61
+kaiju_test.txt	Cymbidium mosaic virus	19.92
+kaiju_test.txt	Circovirus-like genome SAR-B	12.35
+centrifuge_test.txt	unclassified	99.72
+centrifuge_test.txt	root	0.05
+centrifuge_test.txt	other	0.0
+centrifuge_test.txt	Ustilaginoidea virens nonsegmented virus 2	
+centrifuge_test.txt	Tomato leaf curl alphasatellite	
+centrifuge_test.txt	Siphoviridae	0.23
+centrifuge_test.txt	Gordonia phage GTE6	
+centrifuge_test.txt	Cymbidium mosaic virus	
+centrifuge_test.txt	Circovirus-like genome SAR-B	

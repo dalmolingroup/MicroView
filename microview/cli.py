@@ -70,9 +70,11 @@ def main(taxonomy: Path, csv_file: Path, output: Path) -> None:
             tax_results = get_tax_data(reports)
             # TODO: Improve this double check
             if parsed_result is not None:
-                tax_plots = generate_taxo_plots(tax_results, parsed_result["dataframe"])
+                tax_plots = generate_taxo_plots(
+                    tax_results, parsed_result["dataframe"], output_path=output
+                )
             else:
-                tax_plots = generate_taxo_plots(tax_results)
+                tax_plots = generate_taxo_plots(tax_results, output_path=output)
             render_base(tax_plots=tax_plots, dir_path=data_source, output_path=output)
         console.print(f"\n Done!\n", style="bold green")
     except Exception:
