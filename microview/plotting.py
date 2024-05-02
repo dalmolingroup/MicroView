@@ -28,6 +28,7 @@ def export_to_html(fig: Figure, div_id: str) -> str:
         config=config,
     )
 
+
 def write_table(df, output_path, path):
     """
     Write a dataframe to a file
@@ -37,6 +38,7 @@ def write_table(df, output_path, path):
     path = dirpath / path
 
     df.to_csv(path, sep="\t", index=False)
+
 
 def merge_with_contrasts(df, contrast_df, left_colname: Optional[str] = "index"):
     """
@@ -180,7 +182,9 @@ def generate_taxo_plots(tax_data: Dict, contrast_df=None, output_path=None) -> D
         ]
         merged_taxas_df = merge_with_contrasts(tax_data["common taxas"], contrast_df)
 
-        common_taxas = plot_common_taxas(merged_taxas_df,output_path, facet_col="group")
+        common_taxas = plot_common_taxas(
+            merged_taxas_df, output_path, facet_col="group"
+        )
         common_taxas.update_xaxes(matches=None)
 
         abund_div = plot_abund_div(
